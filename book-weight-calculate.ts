@@ -41,8 +41,10 @@ const pageHeight = promptContinuouslyForValidInt(
   "How tall is your book in mm?"
 );
 
+// Calculate the area of the page in mm²
 const pageArea = pageWidth * pageHeight;
 
+// Calculate the weight of a single page
 const pageWeight = pageArea * gramsPerSquareMM;
 
 // Calculate the book weight
