@@ -2,7 +2,7 @@
 const gramsPerSquareMM = 0.0000801667;
 
 // Function to ask the user for  a number
-function promptContinuouslyForValidInt(prompt: string): number {
+function promptContinuouslyForValidPositiveInt(prompt: string): number {
   // Loop until we get a valid input
   let success = false;
   let value = 0;
@@ -12,7 +12,7 @@ function promptContinuouslyForValidInt(prompt: string): number {
     const input = window.prompt(prompt);
     // Validate that they entered something
     if (!input) {
-      console.info("Enter a number");
+      console.warn("Enter a number");
       continue;
     }
     // Try/catch in case parsing the number fails
@@ -20,26 +20,34 @@ function promptContinuouslyForValidInt(prompt: string): number {
       const res = Number.parseInt(input);
       // Make sure it's a real number
       if (!Number.isNaN(res)) {
+        if (res < 0) {
+          console.warn("Number greater than zero please");
+          continue;
+        }
         // Make the number of pages available to other code outside the loop
         value = res;
         // Exit the loop
         success = true;
-      } else console.warn("Number pls");
+      } else console.warn("Number please");
     } catch {
-      console.log("Enter a valid number pls");
+      console.warn("Enter a valid number please");
     }
   }
   return value;
 }
 
 // Get page dimensions
-const pageWidth = promptContinuouslyForValidInt("How wide is your book in mm?");
-const pageHeight = promptContinuouslyForValidInt(
+const pageWidth = promptContinuouslyForValidPositiveInt(
+  "How wide is your book in mm?"
+);
+const pageHeight = promptContinuouslyForValidPositiveInt(
   "How tall is your book in mm?"
 );
 
 // Get the page count
-const pageCount = promptContinuouslyForValidInt("How many pages in your book?");
+const pageCount = promptContinuouslyForValidPositiveInt(
+  "How many pages in your book?"
+);
 
 // Calculate the area of the page in mm²
 const pageArea = pageWidth * pageHeight;
