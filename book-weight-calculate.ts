@@ -32,14 +32,14 @@ function promptContinuouslyForValidInt(prompt: string): number {
   return value;
 }
 
-// Get the page count
-const pageCount = promptContinuouslyForValidInt("How many pages in your book?");
-
 // Get page dimensions
 const pageWidth = promptContinuouslyForValidInt("How wide is your book in mm?");
 const pageHeight = promptContinuouslyForValidInt(
   "How tall is your book in mm?"
 );
+
+// Get the page count
+const pageCount = promptContinuouslyForValidInt("How many pages in your book?");
 
 // Calculate the area of the page in mm²
 const pageArea = pageWidth * pageHeight;
