@@ -44,8 +44,8 @@ function promptContinuouslyForValidInt(
         // Exit the loop
         success = true;
       } else console.warn("Number please");
-    } catch {
-      console.warn("Enter a valid number please");
+    } catch (err) {
+      console.warn(`Something went wrong parsing your number: ${err}`);
     }
   }
   return value;
