@@ -6,7 +6,7 @@ const defaultValues = {
   maxValue: 15000,
   minValue: 1,
 };
-function promptContinuouslyForValidPositiveInt(
+function promptContinuouslyForValidInt(
   prompt: string,
   options: { maxValue?: number; minValue?: number } = defaultValues
 ): number {
@@ -52,19 +52,17 @@ function promptContinuouslyForValidPositiveInt(
 }
 
 // Get page dimensions
-const pageWidth = promptContinuouslyForValidPositiveInt(
+const pageWidth = promptContinuouslyForValidInt(
   "How wide is your book in mm?",
   { maxValue: 1000 }
 );
-const pageHeight = promptContinuouslyForValidPositiveInt(
+const pageHeight = promptContinuouslyForValidInt(
   "How tall is your book in mm?",
   { maxValue: 1000 }
 );
 
 // Get the page count
-const pageCount = promptContinuouslyForValidPositiveInt(
-  "How many pages in your book?"
-);
+const pageCount = promptContinuouslyForValidInt("How many pages in your book?");
 
 // Calculate the area of the page in mm²
 const pageArea = pageWidth * pageHeight;
