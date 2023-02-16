@@ -1,3 +1,4 @@
 .vscode/
 emails.txt
 validated-emails.txt
+__pycache__/
