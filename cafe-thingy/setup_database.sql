@@ -1,0 +1,16 @@
+CREATE TABLE "Categories" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+
+CREATE TABLE "Products" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"name"	TEXT NOT NULL,
+	"description"	TEXT NOT NULL,
+	"size"	TEXT NOT NULL,
+	"image_path"	TEXT NOT NULL,
+	"price"	REAL NOT NULL,
+	"category_id"	INTEGER NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
