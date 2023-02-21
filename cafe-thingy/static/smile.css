@@ -1,3 +1,150 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+/* Theme */
+:root {
+  --accent: #fb923c;
+  --background: #fafaf9;
+  --text: #1c1917;
+  --text-light: #292524;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --accent: #ea580c;
+    --background: #1c1917;
+    --text: #fafaf9;
+    --text-light: #f5f5f4;
+  }
+}
+
+/* Main page stuff */
+html,
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+main {
+  padding: 15px;
+}
+
+/* Menu page */
+.menu-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style-type: none;
+  gap: 25px;
+  justify-content: center;
+}
+
+.product {
+  width: 425px;
+  height: 300px;
+  display: flex;
+  gap: 10px;
+  position: relative;
+}
+
 .product-image {
+  width: 200px;
+  height: 300px;
+  aspect-ratio: 2/3;
+  border-radius: 50px;
+  display: block;
+
+  /* Dark overlay */
+  filter: brightness(80%);
+
+  /* Makes the image fill the container nicely */
   object-fit: cover;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  overflow: auto;
+}
+
+.product-name {
+  font-size: 48px;
+  letter-spacing: -0.07em;
+  line-height: 58px;
+  color: var(--text-light);
+}
+
+.product-description {
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: 0.015em;
+}
+
+.product-price {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 64px;
+  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  left: 15px;
+}
+
+@media (max-width: 920px) {
+  .menu-list {
+    flex-direction: column;
+    align-items: center;
+    justify-content: initial;
+    gap: 50px;
+  }
+
+  .product {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .product-image {
+    aspect-ratio: 3/2;
+    width: 100%;
+    border-radius: 25px;
+
+    /* Dark overlay */
+    filter: brightness(80%);
+
+    /* Makes the image fill the container nicely */
+    object-fit: cover;
+  }
+
+  .product-info {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .product-name {
+    font-size: 48px;
+    letter-spacing: -0.07em;
+    line-height: 58px;
+    color: var(--text-light);
+  }
+
+  .product-description {
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: 0.015em;
+  }
+
+  .product-price {
+    bottom: 100%;
+    top: 15px;
+    left: 15px;
+  }
 }
