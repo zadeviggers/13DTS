@@ -148,3 +148,7 @@ main {
     left: 15px;
   }
 }
+
+[data-current-category="yes"] {
+  font-weight: bold;
+}

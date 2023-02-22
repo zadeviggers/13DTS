@@ -4,6 +4,18 @@
     menu
 {% endblock  pageheading %}
 {% block main %}
+    <ul class="category-list">
+        <li>
+            <a href="/menu"
+               data-current-category="{{ 'yes' if current_category_id == None else 'no' }}">All</a>
+        </li>
+        {% for category in categories %}
+            <li>
+                <a href="/menu/{{ category.id }}"
+                   data-current-category="{{ 'yes' if category.id|string == current_category_id else 'no' }}">{{ category.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
     <ul class="menu-list">
         {% for product in products %}
             <li class="product">
@@ -19,5 +31,6 @@
                 <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
             </li>
         {% endfor %}
+        {% if products|length == 0 %}<p>No products found.</p>{% endif %}
     </ul>
 {% endblock  main %}
