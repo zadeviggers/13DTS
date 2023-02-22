@@ -5,14 +5,12 @@
 {% endblock  pageheading %}
 {% block main %}
     <ul class="category-list">
-        <li>
-            <a href="/menu"
-               data-current-category="{{ 'yes' if current_category_id == None else 'no' }}">All</a>
+        <li data-current-category="{{ 'yes' if current_category_id == None else 'no' }}">
+            <a href="/menu">All</a>
         </li>
         {% for category in categories %}
-            <li>
-                <a href="/menu/{{ category.id }}"
-                   data-current-category="{{ 'yes' if category.id|string == current_category_id else 'no' }}">{{ category.name }}</a>
+            <li data-current-category="{{ 'yes' if category.id|string == current_category_id else 'no' }}">
+                <a href="/menu/{{ category.id }}">{{ category.name }}</a>
             </li>
         {% endfor %}
     </ul>
