@@ -59,6 +59,7 @@ main {
   aspect-ratio: 2/3;
   border-radius: 50px;
   display: block;
+  border: 2px solid var(--text);
 
   /* Dark overlay */
   filter: brightness(80%);
