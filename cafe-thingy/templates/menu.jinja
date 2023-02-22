@@ -1,7 +1,7 @@
 {% extends 'base.jinja' %}
 {% set title = "Menu" %}
 {% block pageheading %}
-    menu
+    Our menu
 {% endblock  pageheading %}
 {% block main %}
     <ul class="category-list">
@@ -15,20 +15,23 @@
         {% endfor %}
     </ul>
     <ul class="menu-list">
-        {% for product in products %}
-            <li class="product">
-                <img height="500"
-                     width="500"
-                     src="{{ url_for('static', filename='images/'+product.image_path)}}"
-                     class="product-image"
-                     alt="A photo of a {{ product.name }}"/>
-                <div class="product-info">
-                    <span class="product-name">{{ product.name }}</span>
-                    <span class="product-description">{{ product.description }}</span>
-                </div>
-                <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
-            </li>
-        {% endfor %}
-        {% if products|length == 0 %}<p>No products found.</p>{% endif %}
+        {% if products|length > 0 %}
+            {% for product in products %}
+                <li class="product">
+                    <img height="500"
+                         width="500"
+                         src="{{ url_for('static', filename='images/'+product.image_path)}}"
+                         class="product-image"
+                         alt="A photo of a {{ product.name }}"/>
+                    <div class="product-info">
+                        <span class="product-name">{{ product.name }}</span>
+                        <span class="product-description">{{ product.description }}</span>
+                    </div>
+                    <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p>No products found.</p>
+        {% endif %}
     </ul>
 {% endblock  main %}
