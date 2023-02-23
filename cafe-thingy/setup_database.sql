@@ -14,3 +14,10 @@ CREATE TABLE "Products" (
 	"category_id"	INTEGER NOT NULL DEFAULT 1,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
+
+CREATE TABLE "Users" (
+	"display_name"	TEXT NOT NULL,
+	"username"	TEXT NOT NULL,
+	"password"	TEXT NOT NULL,
+	"admin"	INTEGER NOT NULL DEFAULT 0 COLLATE BINARY
+);

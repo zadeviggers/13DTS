@@ -180,7 +180,6 @@ main {
   font-weight: bold;
   color: var(--accent);
   letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 .category-list a:hover {
