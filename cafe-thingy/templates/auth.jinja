@@ -1,7 +1,46 @@
 {% extends 'base.jinja' %}
 {% set title = "Log In or Register" %}
 {% block pageheading %}
-    Log In or Register
+    Log in or Register
 {% endblock  pageheading %}
 {% block main %}
+    <fieldset form="login-form">
+        <legend>
+            Log in
+        </legend>
+        <form action="/auth/login" method="post" id="login-form" class="auth-form">
+            <label for="login-username">
+                Username
+                <input type="text" name="username" id="login-username"/>
+            </label>
+            <label for="login-password">
+                Password
+                <input type="password" name="password" id="login-password"/>
+            </label>
+            <button type="submit">Log in</button>
+        </form>
+    </fieldset>
+    <fieldset form="register-form">
+        <legend>
+            Register
+        </legend>
+        <form action="/auth/register"
+              method="post"
+              id="register-form"
+              class="auth-form">
+            <label for="register-display_name">
+                Display name
+                <input type="text" name="display_name" id="register-display_name"/>
+            </label>
+            <label for="register-username">
+                Username
+                <input type="text" name="username" id="register-username"/>
+            </label>
+            <label for="register-password">
+                Password
+                <input type="password" name="password" id="register-password"/>
+            </label>
+            <button type="submit">Register</button>
+        </form>
+    </fieldset>
 {% endblock  main %}

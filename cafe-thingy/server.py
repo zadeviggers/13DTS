@@ -55,6 +55,13 @@ def menu_route(category_id=None):
         return render_template("menu.jinja", products=products, current_category_id=category_id, categories=categories)
 
 
+@server.route("/auth")
+def auth_page_route():
+    with get_db() as (connection, cursor):
+
+        return render_template("auth.jinja")
+
+
 @server.route("/contact")
 def contact_route():
     return render_template("contact.jinja")
