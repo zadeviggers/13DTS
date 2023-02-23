@@ -1,13 +1,15 @@
 from flask import Flask, render_template
+from flask_bcrypt import Bcrypt
 import sqlite3
 from contextlib import contextmanager
 
 server = Flask(__name__)
+bcrypt = Bcrypt(server)
 
 
-def dict_factory(cursor, row):
-    # Used to return query results as dictionaries.
-    # From the docs: https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory
+# Used to return databse query results as dictionaries.
+# From the docs: https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory
+def db_dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
@@ -16,16 +18,17 @@ def dict_factory(cursor, row):
 
 # Custom context manager for getting a database connection,
 # based on the example from the docs https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
+# This means that the database connection is closed cleanly when it's no longer needed.e43
 @contextmanager
 def get_db(*args, **kwds):
-    # Code to acquire resource, e.g.:
+    # Code to acquire resource.
     db_connection = sqlite3.connect("smile.sqlite")
-    db_connection.row_factory = dict_factory
+    db_connection.row_factory = db_dict_factory
     db_cursor = db_connection.cursor()
     try:
         yield (db_connection, db_cursor)
     finally:
-        # Code to release resource, e.g.:
+        # Code to release resource.
         db_connection.close()
 
 
@@ -37,7 +40,6 @@ def home_route():
 @server.route("/menu")
 @server.route("/menu/<category_id>")
 def menu_route(category_id=None):
-
     with get_db() as (connection, cursor):
         if category_id is not None:
             query = """SELECT name, description, image_path, price FROM Products WHERE category_id=?"""

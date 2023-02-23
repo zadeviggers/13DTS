@@ -11,6 +11,6 @@ CREATE TABLE "Products" (
 	"size"	TEXT NOT NULL,
 	"image_path"	TEXT NOT NULL,
 	"price"	REAL NOT NULL,
-	"category_id"	INTEGER NOT NULL,
+	"category_id"	INTEGER NOT NULL DEFAULT 1,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
