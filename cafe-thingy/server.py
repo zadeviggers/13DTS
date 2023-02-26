@@ -50,6 +50,12 @@ def try_log_in() -> bool:
     return False
 
 
+def try_log_out() -> bool:
+    # Try to log the user out, and return True if it works,
+    # or False if it doesn't.
+    return False
+
+
 @server.route("/", methods=["GET"])
 def handle_home():
     user = get_user()
