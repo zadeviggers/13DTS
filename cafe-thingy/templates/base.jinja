@@ -21,7 +21,11 @@
                     <a href="/">Home</a>
                     <a href="/menu">Our menu</a>
                     <a href="/contact">Contact us</a>
-                    <a href="/auth">Log in or Regsiter</a>
+                    {% if user %}
+                        <a href="/auth/logout">Log out</a>
+                    {% else %}
+                        <a href="/auth">Log in or Regsiter</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
