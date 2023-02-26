@@ -217,14 +217,20 @@ fieldset {
   padding: 10px;
   padding-left: 15px;
   padding-right: 15px;
-  background-color: var(--background-2);
   border: 2px solid var(--text-2);
   color: var(--text);
+  background-color: var(--background);
+
   border-radius: 5px;
+}
+
+.auth-form input:hover {
+  background-color: var(--background-2);
 }
 
 .auth-form input:focus {
   border-color: var(--accent);
+  background-color: var(--background-2);
   outline: none;
 }
 
