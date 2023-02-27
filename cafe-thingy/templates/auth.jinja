@@ -9,11 +9,16 @@
             <aside class="info-callout">
                 Logged out!
             </aside>
-        {% else %}
+        {% elif logged_out==False %}
             <aside class="error-callout">
                 Failed to log out
             </aside>
         {% endif %}
+    {% endif %}
+    {% if failed != None %}
+        <aside class="error-callout">
+            {{ failed }}
+        </aside>
     {% endif %}
     <fieldset form="login-form">
         <legend>

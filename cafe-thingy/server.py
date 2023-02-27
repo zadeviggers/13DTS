@@ -64,7 +64,7 @@ def get_user():
 
 def try_create_account() -> bool:
     # Try to create and account log the user in,
-    # and return True if it works, or False if it doesn't.
+    # and return True if it works, or and error string if it doesn't.
     display_name = request.form["display_name"]
     username = request.form["username"]
     password = request.form["password"]
@@ -77,6 +77,12 @@ def try_create_account() -> bool:
     with get_db() as (connection, cursor):
         try:
             cursor.execute(
+                "SELECT username FROM Users WHERE username=?", [username])
+            res = cursor.fetchall()
+            if len(res) > 0:
+                return "Username already taken"
+
+            cursor.execute(
                 "INSERT INTO Users (admin, display_name, username, password) VALUES (0,?,?,?)",
                 [display_name, username, encrypted_password])
             connection.commit()
@@ -85,7 +91,7 @@ def try_create_account() -> bool:
             return True
         except Exception as e:
             print(f"Failed to create account: {e}")
-            return False
+            return str(e)
 
 
 def try_log_in() -> bool:
@@ -159,12 +165,12 @@ def handle_auth_register():
     if get_user():
         return redirect("/?m=Already%20logged%20in")
 
-    success = try_create_account()
+    res = try_create_account()
 
-    if success:
+    if res == True:
         return redirect("/?m=Successfully%20logged%20in")
 
-    return render_template("auth.jinja", failed="register")
+    return render_template("auth.jinja", failed=res)
 
 
 @server.route("/auth/logout", methods=["GET"])
