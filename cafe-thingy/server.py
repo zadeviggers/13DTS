@@ -1,10 +1,13 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, session
 from flask_bcrypt import Bcrypt
 import sqlite3
 from contextlib import contextmanager
+import os
 
 server = Flask(__name__)
 bcrypt = Bcrypt(server)
+
+server.secret_key = os.urandom(69)
 
 
 # Used to return database query results as dictionaries.
@@ -41,7 +44,27 @@ def get_user():
 def try_create_account() -> bool:
     # Try to create and account log the user in,
     # and return True if it works, or False if it doesn't.
-    return False
+    display_name = request.form["display_name"]
+    username = request.form["username"]
+    password = request.form["password"]
+
+    if not display_name or not username or not password:
+        return False
+
+    encrypted_password = bcrypt.generate_password_hash(password)
+
+    with get_db() as (connection, cursor):
+        try:
+            cursor.execute(
+                "INSERT INTO Users (admin, display_name, username, password) VALUES (0,?,?,?)",
+                [display_name, username, encrypted_password])
+            connection.commit()
+            session['username'] = username
+            session['display_name'] = display_name
+            return True
+        except Exception as e:
+            print(f"Failed to create account: {e}")
+            return False
 
 
 def try_log_in() -> bool:
@@ -76,14 +99,14 @@ def handle_menu(category_id=None):
     user = get_user()
     with get_db() as (connection, cursor):
         if category_id is not None:
-            query = """SELECT name, description, image_path, price FROM Products WHERE category_id=?"""
+            query = "SELECT name, description, image_path, price FROM Products WHERE category_id=?"
             cursor.execute(query, [category_id])
         else:
-            query = """SELECT name, description, image_path, price FROM Products"""
+            query = "SELECT name, description, image_path, price FROM Products"
             cursor.execute(query)
         products = cursor.fetchall()
 
-        cursor.execute("""SELECT name, id FROM Categories""")
+        cursor.execute("SELECT name, id FROM Categories")
         categories = cursor.fetchall()
 
         return render_template("menu.jinja", user=user, products=products, current_category_id=category_id, categories=categories)
