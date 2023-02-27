@@ -94,10 +94,36 @@ def try_create_account() -> bool:
             return str(e)
 
 
-def try_log_in() -> bool:
+def try_log_in():
     # Try to log the user in, and return True if it works,
-    # or False if it doesn't.
-    return False
+    # or and error message if it doesn't.
+    username = request.form["username"]
+    password = request.form["password"]
+
+    with get_db() as (connection, cursor):
+        try:
+            cursor.execute(
+                "SELECT username, display_name, password FROM Users WHERE username=?", [username])
+            res = cursor.fetchall()
+
+            print(res)
+
+            if len(res) == 0:
+                return "User not found"
+
+            user = res[0]
+
+            matches = bcrypt.check_password_hash(user["password"], password)
+
+            if not matches:
+                return "Password is wrong"
+
+            session['username'] = user["display_name"]
+            session['display_name'] = user["username"]
+            return True
+        except Exception as e:
+            print(f"Failed to create account: {e}")
+            return str(e)
 
 
 def log_out():
@@ -152,12 +178,12 @@ def handle_auth_log_in():
     if get_user():
         return redirect("/?m=Already%20logged%20in")
 
-    success = try_log_in()
+    result = try_log_in()
 
-    if success:
+    if result == True:
         return redirect("/")
 
-    return render_template("auth.jinja", failed="log in")
+    return render_template("auth.jinja", failed=result)
 
 
 @server.route("/auth/register", methods=["POST"])
