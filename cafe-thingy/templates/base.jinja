@@ -21,11 +21,14 @@
                     <a href="/">Home</a>
                     <a href="/menu">Our menu</a>
                     <a href="/contact">Contact us</a>
-                    {% if user %}
-                        <a href="/auth/logout">Log out</a>
-                    {% else %}
-                        <a href="/auth">Log in or Regsiter</a>
-                    {% endif %}
+                    <span>
+                        {% if user %}
+                            <span>Logged in as {{ user["display_name"] }}</span>
+                            <a href="/auth/logout">Log out</a>
+                        {% else %}
+                            <a href="/auth">Log in or Regsiter</a>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
         </nav>

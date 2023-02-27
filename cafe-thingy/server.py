@@ -10,20 +10,27 @@ bcrypt = Bcrypt(server)
 server.secret_key = os.urandom(69)
 
 
-# Used to return database query results as dictionaries.
-# From the docs: https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory
 def db_dict_factory(cursor, row):
+    # Used to return database query results as dictionaries.
+    # From the docs: https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory
+
     d = {}
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
 
 
-# Custom context manager for getting a database connection,
-# based on the example from the docs https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
-# This means that the database connection is closed cleanly when it's no longer needed.e43
 @contextmanager
 def get_db(*args, **kwds):
+    # Custom context manager for getting a database connection,
+    # based on the example from the docs https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
+    # This means that the database connection is closed cleanly when it's no longer needed.
+    # Example usage:
+    # ```
+    # with get_db() as (connection, cursor):
+    #   cursor.execute("SELECT * FROM Users")
+    # ```
+
     # Code to acquire resource.
     db_connection = sqlite3.connect("smile.sqlite")
     db_connection.row_factory = db_dict_factory
@@ -38,6 +45,20 @@ def get_db(*args, **kwds):
 def get_user():
     # Return the current user session,
     # or return False if there is none.
+    if ("username" in session) and ("display_name" in session):
+        username = session["username"]
+        display_name = session["display_name"]
+
+        print(session)
+
+        if username is None or display_name is None:
+            return False
+
+        return {
+            "username": session["username"],
+            "display_name": session["display_name"]
+        }
+
     return False
 
 
@@ -73,10 +94,10 @@ def try_log_in() -> bool:
     return False
 
 
-def try_log_out() -> bool:
-    # Try to log the user out, and return True if it works,
-    # or False if it doesn't.
-    return False
+def log_out():
+    # Remove all keys from the user session thingy
+    session.pop('username', None)
+    session.pop('display_name', None)
 
 
 @server.route("/", methods=["GET"])
@@ -149,8 +170,8 @@ def handle_auth_register():
 @server.route("/auth/logout", methods=["GET"])
 def handle_auth_log_out():
     if not get_user():
-        return redirect("/auth")
+        return render_template("auth.jinja", logged_out=False)
 
-    success = try_log_out()
+    log_out()
 
-    return render_template("auth.jinja", logged_out=success)
+    return render_template("auth.jinja", logged_out=True)

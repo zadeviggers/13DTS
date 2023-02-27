@@ -4,6 +4,17 @@
     Log in or Register
 {% endblock  pageheading %}
 {% block main %}
+    {% if logged_out != None %}
+        {% if logged_out %}
+            <aside class="info-callout">
+                Logged out!
+            </aside>
+        {% else %}
+            <aside class="error-callout">
+                Failed to log out
+            </aside>
+        {% endif %}
+    {% endif %}
     <fieldset form="login-form">
         <legend>
             Log in
