@@ -241,3 +241,21 @@ fieldset {
   display: block;
   border-radius: 10px;
 }
+
+aside {
+  padding: 10px;
+  border: 1px solid var(--background);
+  border-radius: 5px;
+}
+
+.error-callout {
+  border-color: red;
+  background-color: darkred;
+  color: white;
+}
+
+.info-callout {
+  border-color: blue;
+  background-color: darkblue;
+  color: white;
+}
