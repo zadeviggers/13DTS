@@ -45,18 +45,22 @@ def get_db(*args, **kwds):
 def get_user():
     # Return the current user session,
     # or return False if there is none.
+
+    # Avoid having to deal with an index error
     if ("username" in session) and ("display_name" in session):
         username = session["username"]
         display_name = session["display_name"]
+        admin = session["admin"]
 
         print(session)
 
-        if username is None or display_name is None:
+        if username is None or display_name is None or admin is None:
             return False
 
         return {
-            "username": session["username"],
-            "display_name": session["display_name"]
+            "username": username,
+            "display_name": display_name,
+            "admin": admin
         }
 
     return False
@@ -88,6 +92,8 @@ def try_create_account() -> bool:
             connection.commit()
             session['username'] = username
             session['display_name'] = display_name
+            session['admin'] = False
+
             return True
         except Exception as e:
             print(f"Failed to create account: {e}")
@@ -103,7 +109,7 @@ def try_log_in():
     with get_db() as (connection, cursor):
         try:
             cursor.execute(
-                "SELECT username, display_name, password FROM Users WHERE username=?", [username])
+                "SELECT username, display_name, admin, password FROM Users WHERE username=?", [username])
             res = cursor.fetchall()
 
             print(res)
@@ -120,6 +126,7 @@ def try_log_in():
 
             session['username'] = user["display_name"]
             session['display_name'] = user["username"]
+            session['admin'] = user["admin"]
             return True
         except Exception as e:
             print(f"Failed to create account: {e}")
@@ -130,6 +137,7 @@ def log_out():
     # Remove all keys from the user session thingy
     session.pop('username', None)
     session.pop('display_name', None)
+    session.pop('admin', None)
 
 
 @server.route("/", methods=["GET"])
@@ -207,3 +215,12 @@ def handle_auth_log_out():
     log_out()
 
     return render_template("auth.jinja", logged_out=True)
+
+
+@server.route("/admin", methods=["GET"])
+def handle_admin():
+    user = get_user()
+    if not user or (user["admin"] != True):
+        return redirect("/")
+
+    return render_template("admin.jinja", user=user)

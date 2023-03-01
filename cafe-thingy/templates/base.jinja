@@ -17,33 +17,32 @@
         <nav>
             <div class="container">
                 <div class="navbar-brand">smile.</div>
-                <div class="navbar-links">
+                <nav class="navbar-links">
                     <a href="/">Home</a>
                     <a href="/menu">Our menu</a>
                     <a href="/contact">Contact us</a>
-                    <span>
-                        {% if user %}
-                            <span>Logged in as {{ user["display_name"] }}</span>
-                            <a href="/auth/logout">Log out</a>
-                        {% else %}
-                            <a href="/auth">Log in or Regsiter</a>
-                        {% endif %}
-                    </span>
+                    {% if user %}
+                        {% if user.admin %}<a href="/admin">Admin</a>{% endif %}
+                        <span>Logged in as {{ user["display_name"] }}</span>
+                        <a href="/auth/logout">Log out</a>
+                    {% else %}
+                        <a href="/auth">Log in or Regsiter</a>
+                    {% endif %}
+                    </naav>
                 </div>
+            </nav>
+            <div class="container">
+                <header>
+                    <h1>smile</h1>
+                    <h2>
+                        {% block pageheading %}
+                        {% endblock pageheading %}
+                    </h2>
+                </header>
+                <main>
+                    {% block main %}
+                    {% endblock main %}
+                </main>
             </div>
-        </nav>
-        <div class="container">
-            <header>
-                <h1>smile</h1>
-                <h2>
-                    {% block pageheading %}
-                    {% endblock pageheading %}
-                </h2>
-            </header>
-            <main>
-                {% block main %}
-                {% endblock main %}
-            </main>
-        </div>
-    </body>
-</html>
+        </body>
+    </html>
