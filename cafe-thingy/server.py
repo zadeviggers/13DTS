@@ -197,12 +197,12 @@ def handle_auth_log_in():
 @server.route("/auth/register", methods=["POST"])
 def handle_auth_register():
     if get_user():
-        return redirect("/?m=Already%20logged%20in")
+        return redirect("/?m=Already+logged+in")
 
     res = try_create_account()
 
     if res == True:
-        return redirect("/?m=Successfully%20logged%20in")
+        return redirect("/?m=Successfully+logged+in")
 
     return render_template("auth.jinja", failed=res)
 
@@ -221,6 +221,6 @@ def handle_auth_log_out():
 def handle_admin():
     user = get_user()
     if not user or (user["admin"] != True):
-        return redirect("/")
+        return redirect("/?m=You+are+not+an+admin")
 
     return render_template("admin.jinja", user=user)

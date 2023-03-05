@@ -44,5 +44,15 @@
                     {% endblock main %}
                 </main>
             </div>
+            <script>
+                const params = new URLSearchParams(location.search)
+                const message = params.get("m")
+                if (message) {
+                    // Show message to user
+                    window.alert(message)
+                    // Remove message from url without adding to history
+                    window.history.replaceState(null, null, window.location.pathname);
+                }
+            </script>
         </body>
     </html>
