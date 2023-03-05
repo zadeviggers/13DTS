@@ -245,4 +245,7 @@ def handle_admin():
 @server.route("/admin/categories", methods=["GET", "POST"])
 @admin_only
 def handle_admin_categories():
-    return render_template("categories.jinja", user=g.user)
+    with get_db() as (connection, cursor):
+        cursor.execute("SELECT id, name FROM Categories")
+        categories = cursor.fetchall()
+        return render_template("categories.jinja", user=g.user, categories=categories)
