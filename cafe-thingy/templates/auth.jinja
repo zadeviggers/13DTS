@@ -2,7 +2,7 @@
 {% set title = "Log In or Register" %}
 {% block pageheading %}
     Log in or Register
-{% endblock  pageheading %}
+{% endblock pageheading %}
 {% block main %}
     {% if logged_out != None %}
         {% if logged_out %}
@@ -24,7 +24,10 @@
         <legend>
             Log in
         </legend>
-        <form action="/auth/login" method="post" id="login-form" class="auth-form">
+        <form action="{{ url_for('handle_auth_login') }}"
+              method="post"
+              id="login-form"
+              class="auth-form">
             <label for="login-username">
                 Username
                 <input type="text" name="username" id="login-username"/>
@@ -40,7 +43,7 @@
         <legend>
             Register
         </legend>
-        <form action="/auth/register"
+        <form action="{{ url_for('handle_auth_register') }}"
               method="post"
               id="register-form"
               class="auth-form">
@@ -59,4 +62,4 @@
             <button type="submit">Register</button>
         </form>
     </fieldset>
-{% endblock  main %}
+{% endblock main %}

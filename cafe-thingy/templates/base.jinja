@@ -7,10 +7,6 @@
             | smile
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap"
-              rel="stylesheet"/>
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"/>
         <link href="{{ url_for('static', filename='smile.css') }}" rel="stylesheet"/>
     </head>
     <body>
@@ -18,33 +14,33 @@
             <div class="container">
                 <div class="navbar-brand">smile.</div>
                 <nav class="navbar-links">
-                    <a href="/">Home</a>
-                    <a href="/menu">Our menu</a>
-                    <a href="/contact">Contact us</a>
+                    <a href="{{ url_for('handle_home') }}">Home</a>
+                    <a href="{{ url_for('handle_menu') }}">Our menu</a>
+                    <a href="{{ url_for('handle_contact') }}">Contact us</a>
                     {% if user %}
-                        {% if user.admin %}<a href="/admin">Admin</a>{% endif %}
+                        {% if user.admin %}<a href="{{ url_for('handle_admin') }}">Admin</a>{% endif %}
                         <span>Logged in as {{ user["display_name"] }}</span>
-                        <a href="/auth/logout">Log out</a>
+                        <a href="{{ url_for('handle_auth_log_out') }}">Log out</a>
                     {% else %}
-                        <a href="/auth">Log in or Regsiter</a>
+                        <a href="{{ url_for('handle_auth') }}">Log in or Regsiter</a>
                     {% endif %}
-                    </naav>
-                </div>
-            </nav>
-            <div class="container">
-                <header>
-                    <h1>smile</h1>
-                    <h2>
-                        {% block pageheading %}
-                        {% endblock pageheading %}
-                    </h2>
-                </header>
-                <main>
-                    {% block main %}
-                    {% endblock main %}
-                </main>
+                </nav>
             </div>
-            <script>
+        </nav>
+        <div class="container">
+            <header>
+                <h1>smile</h1>
+                <h2>
+                    {% block pageheading %}
+                    {% endblock pageheading %}
+                </h2>
+            </header>
+            <main>
+                {% block main %}
+                {% endblock main %}
+            </main>
+        </div>
+        <script>
                 const params = new URLSearchParams(location.search)
                 const message = params.get("m")
                 if (message) {
@@ -53,6 +49,6 @@
                     // Remove message from url without adding to history
                     window.history.replaceState(null, null, window.location.pathname);
                 }
-            </script>
-        </body>
-    </html>
+        </script>
+    </body>
+</html>

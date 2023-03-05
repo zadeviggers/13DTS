@@ -244,5 +244,5 @@ def handle_admin():
 
 @server.route("/admin/categories", methods=["GET", "POST"])
 @admin_only
-def handle_admin_category_update():
+def handle_admin_categories():
     return render_template("categories.jinja", user=g.user)
