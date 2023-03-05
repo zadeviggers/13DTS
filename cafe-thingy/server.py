@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, request, session
+from functools import wraps
+from flask import Flask, render_template, redirect, request, session, g
 from flask_bcrypt import Bcrypt
 import sqlite3
 from contextlib import contextmanager
@@ -64,6 +65,29 @@ def get_user():
         }
 
     return False
+
+
+def admin_only(func):
+    # A custom decorator to make pages require the user to be logged in as an admin
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not g.user:
+            return redirect("/auth?m=You+are+not+logged+in")
+        if (g.user["admin"] != True):
+            return redirect("/?m=You+are+not+an+admin")
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@server.before_request
+def load_user():
+    # This function runs before the request handler on each request.
+    # Docs: https://flask.palletsprojects.com/en/2.2.x/api/#flask.Flask.before_request
+
+    # Get the user and stick it ona globally available object
+    # Docs: https://flask.palletsprojects.com/en/2.2.x/api/?highlight=g#flask.g
+    user = get_user()
+    g.user = user
 
 
 def try_create_account() -> bool:
@@ -142,22 +166,17 @@ def log_out():
 
 @server.route("/", methods=["GET"])
 def handle_home():
-    user = get_user()
-
-    return render_template("home.jinja", user=user)
+    return render_template("home.jinja", user=g.user)
 
 
 @server.route("/contact", methods=["GET"])
 def handle_contact():
-    user = get_user()
-
-    return render_template("contact.jinja", user=user)
+    return render_template("contact.jinja", user=g.user)
 
 
 @server.route("/menu", methods=["GET"])
 @server.route("/menu/<category_id>", methods=["GET"])
 def handle_menu(category_id=None):
-    user = get_user()
     with get_db() as (connection, cursor):
         if category_id is not None:
             query = "SELECT name, description, image_path, price FROM Products WHERE category_id=?"
@@ -170,12 +189,12 @@ def handle_menu(category_id=None):
         cursor.execute("SELECT name, id FROM Categories")
         categories = cursor.fetchall()
 
-        return render_template("menu.jinja", user=user, products=products, current_category_id=category_id, categories=categories)
+        return render_template("menu.jinja", user=g.user, products=products, current_category_id=category_id, categories=categories)
 
 
 @server.route("/auth", methods=["GET"])
 def handle_auth():
-    if get_user():
+    if g.user:
         return redirect("/")
 
     return render_template("auth.jinja")
@@ -183,7 +202,7 @@ def handle_auth():
 
 @server.route("/auth/login", methods=["POST"])
 def handle_auth_log_in():
-    if get_user():
+    if g.user:
         return redirect("/?m=Already%20logged%20in")
 
     result = try_log_in()
@@ -196,7 +215,7 @@ def handle_auth_log_in():
 
 @server.route("/auth/register", methods=["POST"])
 def handle_auth_register():
-    if get_user():
+    if g.user:
         return redirect("/?m=Already+logged+in")
 
     res = try_create_account()
@@ -209,7 +228,7 @@ def handle_auth_register():
 
 @server.route("/auth/logout", methods=["GET"])
 def handle_auth_log_out():
-    if not get_user():
+    if not g.user:
         return render_template("auth.jinja", logged_out=False)
 
     log_out()
@@ -218,9 +237,12 @@ def handle_auth_log_out():
 
 
 @server.route("/admin", methods=["GET"])
+@admin_only
 def handle_admin():
-    user = get_user()
-    if not user or (user["admin"] != True):
-        return redirect("/?m=You+are+not+an+admin")
+    return render_template("admin.jinja", user=g.user)
 
-    return render_template("admin.jinja", user=user)
+
+@server.route("/admin/categories", methods=["GET", "POST"])
+@admin_only
+def handle_admin_category_update():
+    return render_template("categories.jinja", user=g.user)
