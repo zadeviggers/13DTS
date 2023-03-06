@@ -1,3 +1,6 @@
+# Copyright 2023 Zade Viggers.
+# All rights reserved.
+
 # Import the `random` module to chose a random item from a list.
 import random
 
