@@ -21,6 +21,7 @@ while playing:
 
     # Loop forever, until the user quits or enters a correct value.
     while True:
+
         # Print this on a separate line for readability
         print(
             f"""Enter one of '{ "', '".join(options)}', or type 'quit' to stop playing.""")
