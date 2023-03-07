@@ -242,10 +242,25 @@ def handle_admin():
     return render_template("admin.jinja", user=g.user)
 
 
-@server.route("/admin/categories", methods=["GET", "POST"])
+@server.route("/admin/categories", methods=["GET"])
 @admin_only
 def handle_admin_categories():
     with get_db() as (connection, cursor):
         cursor.execute("SELECT id, name FROM Categories")
         categories = cursor.fetchall()
         return render_template("categories.jinja", user=g.user, categories=categories)
+
+
+@server.route("/admin/categories/<category_id>", methods=["GET", "POST"])
+@admin_only
+def handle_admin_categories_category(category_id=None):
+    with get_db() as (connection, cursor):
+        category_query = "SELECT id, name FROM Categories WHERE id=?"
+        cursor.execute(category_query, [category_id])
+        category_res = cursor.fetchone()
+
+        products_query = "SELECT name, description, image_path, price FROM Products WHERE category_id=?"
+        cursor.execute(products_query, [category_id])
+        products_res = cursor.fetchall()
+
+        return render_template("categories-category.jinja", user=g.user, category=category_res, products=products_res)

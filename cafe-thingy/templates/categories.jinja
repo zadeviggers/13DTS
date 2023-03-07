@@ -4,4 +4,14 @@
     Categories
 {% endblock pageheading %}
 {% block main %}
+    <section>
+        <h2>Current categories</h2>
+        <ul>
+            {% for category in categories %}
+                <li>
+                    <a href="{{ url_for('handle_admin_categories_category', category_id=category.id)}}">{{ category.name }} (#{{ category.id }})</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
 {% endblock main %}
