@@ -9,14 +9,7 @@
         /
         <a href="{{ url_for('handle_admin_products')}}" class="back-link">Products</a>
     </div>
-    <div class="breadcrumbs">
-        <a href="{{ url_for('handle_admin')}}" class="back-link">Admin</a>
-        /
-        <a href="{{ url_for('handle_admin_categories')}}" class="back-link">Categories</a>
-        /
-        <a href="{{ url_for('handle_admin_category_info', category_id=category.id)}}"
-           class="back-link">{{ category.name }}</a>
-    </div>
+    <span>Category: <a href="{{ url_for('handle_admin_category_info', category_id=product_category.id)}}">{{ product_category.name }}</a></span>
     <section class="product">
         <img height="500"
              width="500"
@@ -32,4 +25,40 @@
     <a href="{{ url_for('handle_admin_delete_product', product_id=product.id)}}"
        class="danger-text"
        data-confirm>Delete product</a>
+    <fieldset>
+        <legend>
+            Modify product
+        </legend>
+        <form action="{{ url_for('handle_admin_update_product', product_id=product.id)}}"
+              method="post">
+            <label for="product_name">
+                Name
+                <input type="text" name="name" id="product_name" value="{{ product.name }}"/>
+            </label>
+            <label for="product_description">
+                Description
+                <textarea type="text" name="description" id="product_description">{{product.description}}</textarea>
+            </label>
+            <label for="product_price">
+                Price
+                <input type="number"
+                       name="price"
+                       id="product_price"
+                       value="{{ product.price }}"
+                       step="any"/>
+            </label>
+            <label for="product_category">
+                Category
+                <select name="category" id="product_category">
+                    {% for category in categories %}
+                        <option value="{{ category.id }}"
+                                {% if category.id == product_category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit">Save changes</button>
+        </form>
+    </fieldset>
 {% endblock main %}

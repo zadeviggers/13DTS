@@ -274,7 +274,7 @@ def handle_admin_products():
         cursor.execute(query)
         res = cursor.fetchall()
 
-        return render_template("admin/products.jinja", products=res)
+        return render_template("admin/products.jinja", user=g.user, products=res)
 
 
 @server.route("/admin/products/<product_id>", methods=["GET"])
@@ -287,11 +287,16 @@ def handle_admin_product_info(product_id=None):
         product_query = "SELECT id, name, description, image_path, price, category_id FROM Products WHERE id=?"
         cursor.execute(product_query, [product_id])
         product_res = cursor.fetchone()
+
         category_query = "SELECT id, name FROM Categories WHERE id=?"
         cursor.execute(category_query, [product_res["category_id"]])
         category_res = cursor.fetchone()
 
-        return render_template("admin/product-info.jinja", product=product_res, category=category_res)
+        categories_query = "SELECT id, name FROM Categories"
+        cursor.execute(categories_query)
+        categories_res = cursor.fetchall()
+
+        return render_template("admin/product-info.jinja", user=g.user, product=product_res, product_category=category_res, categories=categories_res)
 
 
 @server.route("/admin/products/<product_id>/delete", methods=["GET"])
@@ -309,3 +314,21 @@ def handle_admin_delete_product(product_id=None):
         except Exception as e:
             print(e)
             return redirect(f"/admin/products/{product_id}?m=Failed+to+delete+product")
+
+
+@server.route("/admin/products/<product_id>/update", methods=["POST"])
+@admin_only
+def handle_admin_update_product(product_id=None):
+    if not product_id:
+        return redirect("/admin/products")
+
+    with get_db() as (connection, cursor):
+        try:
+            product_query = "UPDATE Products SET name=?, description=?, price=?, category_id=?  WHERE id=?"
+            cursor.execute(product_query, [
+                           request.form["name"], request.form["description"], request.form["price"], request.form["category"], product_id])
+            connection.commit()
+            return redirect(f"/admin/products/{product_id}?m=Successfully+updated+product+{product_id}")
+        except Exception as e:
+            print(e)
+            return redirect(f"/admin/products/{product_id}?m=Failed+to+update+product")
