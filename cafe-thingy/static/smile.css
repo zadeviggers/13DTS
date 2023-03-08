@@ -205,50 +205,59 @@ a.back-link::before {
 }
 
 /***********************
-*       Auth page      *
+*       Forms          *
 ************************/
 fieldset {
   border: 1px solid var(--text-2);
 }
 
-.auth-form {
+form,
+fieldset {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
 }
 
-.auth-form label {
+label {
   display: flex;
   flex-direction: column;
 }
 
-.auth-form label:focus-within {
+label:focus-within {
   color: var(--accent);
 }
 
-.auth-form input {
+form textarea {
+  resize: vertical;
+}
+
+form :is(button, input, select, textarea) {
   padding: 10px;
   padding-left: 15px;
   padding-right: 15px;
   border: 2px solid var(--text-2);
   color: var(--text);
   background-color: var(--background);
-
+  display: block;
+  width: 100%;
   border-radius: 5px;
 }
 
-.auth-form input:hover {
+form :is(button, input, select, textarea):hover {
   background-color: var(--background-2);
 }
 
-.auth-form input:focus {
+form :is(button, input, select, textarea):focus {
   border-color: var(--accent);
   background-color: var(--background-2);
   outline: none;
 }
 
-.auth-form button[type="submit"] {
+form button[type="submit"] {
   padding: 10px;
   padding-left: 15px;
   padding-right: 15px;
-  display: block;
   border-radius: 10px;
 }
 
@@ -270,26 +279,6 @@ aside {
   color: white;
 }
 
-/***************
- * Admin Pages *
- ***************/
-fieldset {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-}
-.edit-info-form {
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-}
-
-form :is(button, input, select, textarea) {
-  display: block;
-  padding: 10px;
-  width: 100%;
-}
-
 @media screen and (min-width: 700px) {
   fieldset {
     align-items: center;
@@ -300,8 +289,6 @@ form :is(button, input, select, textarea) {
   }
 
   form :is(button, input, select, textarea) {
-    display: block;
-    padding: 10px;
     width: 500px;
   }
 }
