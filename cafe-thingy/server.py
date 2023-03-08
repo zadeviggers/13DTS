@@ -292,3 +292,20 @@ def handle_admin_product_info(product_id=None):
         category_res = cursor.fetchone()
 
         return render_template("admin/product-info.jinja", product=product_res, category=category_res)
+
+
+@server.route("/admin/products/<product_id>/delete", methods=["GET"])
+@admin_only
+def handle_admin_delete_product(product_id=None):
+    if not product_id:
+        return redirect("/admin/products")
+
+    with get_db() as (connection, cursor):
+        try:
+            product_query = "DELETE FROM Products WHERE id=?"
+            cursor.execute(product_query, [product_id])
+            connection.commit()
+            return redirect(f"/admin/products?m=Successfully+deleted+product+{product_id}")
+        except Exception as e:
+            print(e)
+            return redirect(f"/admin/products/{product_id}?m=Failed+to+delete+product")

@@ -42,6 +42,11 @@ main {
 a.back-link::before {
   content: "← ";
 }
+
+.danger-text {
+  color: red;
+}
+
 /***********************
 *       Menu page      *
 ************************/

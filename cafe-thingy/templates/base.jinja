@@ -50,5 +50,21 @@
                     window.history.replaceState(null, null, window.location.pathname);
                 }
         </script>
+        <script>
+        // Get all elements we want to add confirmation dialogs to
+            const confrimEls = document.querySelectorAll("[data-confirm]")
+            // Add the click listener to them
+            confrimEls.forEach(el => el.addEventListener("click", confrimClick))
+
+            // Handler function
+            function confrimClick(ev) {
+                // Show confirm dialog to user
+                const confirmed = confirm("Are you sure?")
+                if (!confirmed) {
+                    // If they didn't press confirm, prevent the click.
+                    ev.preventDefault()
+                }
+            }
+        </script>
     </body>
 </html>

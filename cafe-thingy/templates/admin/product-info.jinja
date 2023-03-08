@@ -29,4 +29,7 @@
         </div>
         <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
     </section>
+    <a href="{{ url_for('handle_admin_delete_product', product_id=product.id)}}"
+       class="danger-text"
+       data-confirm>Delete product</a>
 {% endblock main %}
