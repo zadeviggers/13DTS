@@ -1,0 +1,15 @@
+{% extends "base.jinja" %}
+{% set title = "Admin" %}
+{% block pageheading %}
+    Admin
+{% endblock pageheading %}
+{% block main %}
+    <ul>
+        <li>
+            <a href="{{ url_for('handle_admin_categories') }}">Categories</a>
+        </li>
+        <li>
+            <a href="{{ url_for('handle_admin_products') }}">Products</a>
+        </li>
+    </ul>
+{% endblock main %}

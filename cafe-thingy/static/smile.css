@@ -37,6 +37,11 @@ main {
   padding: 15px;
 }
 
+/* Generic site-wide styles */
+
+a.back-link::before {
+  content: "← ";
+}
 /***********************
 *       Menu page      *
 ************************/

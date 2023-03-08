@@ -239,7 +239,7 @@ def handle_auth_log_out():
 @server.route("/admin", methods=["GET"])
 @admin_only
 def handle_admin():
-    return render_template("admin.jinja", user=g.user)
+    return render_template("admin/admin.jinja", user=g.user)
 
 
 @server.route("/admin/categories", methods=["GET"])
@@ -248,19 +248,47 @@ def handle_admin_categories():
     with get_db() as (connection, cursor):
         cursor.execute("SELECT id, name FROM Categories")
         categories = cursor.fetchall()
-        return render_template("categories.jinja", user=g.user, categories=categories)
+        return render_template("admin/categories.jinja", user=g.user, categories=categories)
 
 
 @server.route("/admin/categories/<category_id>", methods=["GET", "POST"])
 @admin_only
-def handle_admin_categories_category(category_id=None):
+def handle_admin_category_info(category_id=None):
     with get_db() as (connection, cursor):
         category_query = "SELECT id, name FROM Categories WHERE id=?"
         cursor.execute(category_query, [category_id])
         category_res = cursor.fetchone()
 
-        products_query = "SELECT name, description, image_path, price FROM Products WHERE category_id=?"
+        products_query = "SELECT id, name FROM Products WHERE category_id=?"
         cursor.execute(products_query, [category_id])
         products_res = cursor.fetchall()
 
-        return render_template("categories-category.jinja", user=g.user, category=category_res, products=products_res)
+        return render_template("admin/category-info.jinja", user=g.user, category=category_res, products=products_res)
+
+
+@server.route("/admin/products", methods=["GET"])
+@admin_only
+def handle_admin_products():
+    with get_db() as (connection, cursor):
+        query = "SELECT id, name FROM Products"
+        cursor.execute(query)
+        res = cursor.fetchall()
+
+        return render_template("admin/products.jinja", products=res)
+
+
+@server.route("/admin/products/<product_id>", methods=["GET"])
+@admin_only
+def handle_admin_product_info(product_id=None):
+    if not product_id:
+        return redirect("/admin/products")
+
+    with get_db() as (connection, cursor):
+        product_query = "SELECT id, name, description, image_path, price, category_id FROM Products WHERE id=?"
+        cursor.execute(product_query, [product_id])
+        product_res = cursor.fetchone()
+        category_query = "SELECT id, name FROM Categories WHERE id=?"
+        cursor.execute(category_query, [product_res["category_id"]])
+        category_res = cursor.fetchone()
+
+        return render_template("admin/product-info.jinja", product=product_res, category=category_res)

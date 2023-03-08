@@ -4,12 +4,15 @@
     Categories
 {% endblock pageheading %}
 {% block main %}
+    <div class="breadcrumbs">
+        <a href="{{ url_for('handle_admin')}}" class="back-link">Admin</a>
+    </div>
     <section>
-        <h2>Current categories</h2>
+        <h2>Current categories ({{ categories|length }})</h2>
         <ul>
             {% for category in categories %}
                 <li>
-                    <a href="{{ url_for('handle_admin_categories_category', category_id=category.id)}}">{{ category.name }} (#{{ category.id }})</a>
+                    <a href="{{ url_for('handle_admin_category_info', category_id=category.id)}}">{{ category.name }} (#{{ category.id }})</a>
                 </li>
             {% endfor %}
         </ul>

@@ -1,0 +1,32 @@
+{% extends "base.jinja" %}
+{% set title = "Admin - Products" %}
+{% block pageheading %}
+    Products - {{ product.name }}
+{% endblock pageheading %}
+{% block main %}
+    <div class="breadcrumbs">
+        <a href="{{ url_for('handle_admin')}}" class="back-link">Admin</a>
+        /
+        <a href="{{ url_for('handle_admin_products')}}" class="back-link">Products</a>
+    </div>
+    <div class="breadcrumbs">
+        <a href="{{ url_for('handle_admin')}}" class="back-link">Admin</a>
+        /
+        <a href="{{ url_for('handle_admin_categories')}}" class="back-link">Categories</a>
+        /
+        <a href="{{ url_for('handle_admin_category_info', category_id=category.id)}}"
+           class="back-link">{{ category.name }}</a>
+    </div>
+    <section class="product">
+        <img height="500"
+             width="500"
+             src="{{ url_for('static', filename='images/'+product.image_path)}}"
+             class="product-image"
+             alt="A photo of a {{ product.name }}"/>
+        <div class="product-info">
+            <span class="product-name">{{ product.name }}</span>
+            <span class="product-description">{{ product.description }}</span>
+        </div>
+        <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
+    </section>
+{% endblock main %}

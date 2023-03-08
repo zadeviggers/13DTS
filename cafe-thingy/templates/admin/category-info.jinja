@@ -1,0 +1,22 @@
+{% extends "base.jinja" %}
+{% set title = "Admin - Categories" %}
+{% block pageheading %}
+    Categories - {{ category.name }}
+{% endblock pageheading %}
+{% block main %}
+    <div class="breadcrumbs">
+        <a href="{{ url_for('handle_admin')}}" class="back-link">Admin</a>
+        /
+        <a href="{{ url_for('handle_admin_categories')}}" class="back-link">Categories</a>
+    </div>
+    <section>
+        <h2>Products in {{ category.name }} ({{ products|length }})</h2>
+        <ul>
+            {% for item in products %}
+                <li>
+                    <a href="{{ url_for('handle_admin_product_info', product_id=item.id)}}">{{ item.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock main %}
