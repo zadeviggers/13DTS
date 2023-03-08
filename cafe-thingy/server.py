@@ -251,9 +251,12 @@ def handle_admin_categories():
         return render_template("admin/categories.jinja", user=g.user, categories=categories)
 
 
-@server.route("/admin/categories/<category_id>", methods=["GET", "POST"])
+@server.route("/admin/categories/<category_id>", methods=["GET"])
 @admin_only
 def handle_admin_category_info(category_id=None):
+    if not category_id:
+        return redirect("/admin/categories")
+
     with get_db() as (connection, cursor):
         category_query = "SELECT id, name FROM Categories WHERE id=?"
         cursor.execute(category_query, [category_id])
@@ -264,6 +267,41 @@ def handle_admin_category_info(category_id=None):
         products_res = cursor.fetchall()
 
         return render_template("admin/category-info.jinja", user=g.user, category=category_res, products=products_res)
+
+
+@server.route("/admin/categories/<category_id>/delete", methods=["GET"])
+@admin_only
+def handle_admin_delete_category(category_id=None):
+    if not category_id:
+        return redirect("/admin/categories")
+
+    with get_db() as (connection, cursor):
+        try:
+            product_query = "DELETE FROM Categories WHERE id=?"
+            cursor.execute(product_query, [category_id])
+            connection.commit()
+            return redirect(f"/admin/categories?m=Successfully+deleted+category+{category_id}")
+        except Exception as e:
+            print(e)
+            return redirect(f"/admin/categories/{category_id}?m=Failed+to+delete+category")
+
+
+@server.route("/admin/categories/<category_id>/update", methods=["POST"])
+@admin_only
+def handle_admin_update_category(category_id=None):
+    if not category_id:
+        return redirect("/admin/categories")
+
+    with get_db() as (connection, cursor):
+        try:
+            product_query = "UPDATE Categories SET name=?  WHERE id=?"
+            cursor.execute(product_query, [
+                           request.form["name"], category_id])
+            connection.commit()
+            return redirect(f"/admin/categories/{category_id}?m=Successfully+updated+category+{category_id}")
+        except Exception as e:
+            print(e)
+            return redirect(f"/admin/categories/{category_id}?m=Failed+to+update+category")
 
 
 @server.route("/admin/products", methods=["GET"])

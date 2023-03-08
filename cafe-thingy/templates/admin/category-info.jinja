@@ -19,4 +19,27 @@
             {% endfor %}
         </ul>
     </section>
+    <section>
+        <h2>Actions</h2>
+        <a href="{{ url_for('handle_admin_delete_category', category_id=category.id)}}"
+           class="danger-text"
+           data-confirm>Delete category</a>
+        <fieldset>
+            <legend>
+                Modify category
+            </legend>
+            <form action="{{ url_for('handle_admin_update_category', category_id=category.id)}}"
+                  method="post"
+                  class="edit-info-form">
+                <label for="category_name">
+                    Name
+                    <input type="text"
+                           name="name"
+                           id="category_name"
+                           value="{{ category.name }}"/>
+                </label>
+                <button type="submit">Save changes</button>
+            </form>
+        </fieldset>
+    </section>
 {% endblock main %}
