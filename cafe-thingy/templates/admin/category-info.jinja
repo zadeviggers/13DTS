@@ -21,9 +21,6 @@
     </section>
     <section>
         <h2>Actions</h2>
-        <a href="{{ url_for('handle_admin_delete_category', category_id=category.id)}}"
-           class="danger-text"
-           data-confirm>Delete category</a>
         <fieldset>
             <legend>
                 Modify category
@@ -40,6 +37,18 @@
                 </label>
                 <button type="submit">Save changes</button>
             </form>
+        </fieldset>
+        <fieldset>
+            <legend>
+                Delete
+            </legend>
+            {% if products|length == 0 %}
+                <a href="{{ url_for('handle_admin_delete_category', category_id=category.id)}}"
+                   class="danger-text"
+                   data-confirm>Delete category</a>
+            {% else %}
+                You need to remove all products from a category before you can delete it.
+            {% endif %}
         </fieldset>
     </section>
 {% endblock main %}

@@ -24,9 +24,6 @@
     </section>
     <section>
         <h2>Actions</h2>
-        <a href="{{ url_for('handle_admin_delete_product', product_id=product.id)}}"
-           class="danger-text"
-           data-confirm>Delete product</a>
         <fieldset>
             <legend>
                 Modify product
@@ -63,6 +60,14 @@
                 </label>
                 <button type="submit">Save changes</button>
             </form>
+        </fieldset>
+        <fieldset>
+            <legend>
+                Delete
+            </legend>
+            <a href="{{ url_for('handle_admin_delete_product', product_id=product.id)}}"
+               class="danger-text"
+               data-confirm>Delete product</a>
         </fieldset>
     </section>
 {% endblock main %}
