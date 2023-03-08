@@ -296,8 +296,8 @@ def handle_admin_delete_category(category_id=None):
 
     with get_db() as (connection, cursor):
         try:
-            product_query = "DELETE FROM Categories WHERE id=?"
-            cursor.execute(product_query, [category_id])
+            delete_query = "DELETE FROM Categories WHERE id=?"
+            cursor.execute(delete_query, [category_id])
             connection.commit()
             return redirect(f"/admin/categories?m=Successfully+deleted+category+{category_id}")
         except Exception as e:
@@ -313,8 +313,8 @@ def handle_admin_update_category(category_id=None):
 
     with get_db() as (connection, cursor):
         try:
-            product_query = "UPDATE Categories SET name=?  WHERE id=?"
-            cursor.execute(product_query, [
+            category_query = "UPDATE Categories SET name=?  WHERE id=?"
+            cursor.execute(category_query, [
                            request.form["name"], category_id])
             connection.commit()
             return redirect(f"/admin/categories/{category_id}?m=Successfully+updated+category+{category_id}")
@@ -364,8 +364,8 @@ def handle_admin_delete_product(product_id=None):
 
     with get_db() as (connection, cursor):
         try:
-            product_query = "DELETE FROM Products WHERE id=?"
-            cursor.execute(product_query, [product_id])
+            delete_query = "DELETE FROM Products WHERE id=?"
+            cursor.execute(delete_query, [product_id])
             connection.commit()
             return redirect(f"/admin/products?m=Successfully+deleted+product+{product_id}")
         except Exception as e:
