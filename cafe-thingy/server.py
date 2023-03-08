@@ -43,6 +43,12 @@ def get_db(*args, **kwds):
         db_connection.close()
 
 
+def get_first_dict_item(thing: dict):
+    # A helper function for getting out some
+    # values returned in a weird way by SQLite
+    return list(thing.values())[0]
+
+
 def get_user():
     # Return the current user session,
     # or return False if there is none.
@@ -52,8 +58,6 @@ def get_user():
         username = session["username"]
         display_name = session["display_name"]
         admin = session["admin"]
-
-        print(session)
 
         if username is None or display_name is None or admin is None:
             return False
@@ -135,8 +139,6 @@ def try_log_in():
             cursor.execute(
                 "SELECT username, display_name, admin, password FROM Users WHERE username=?", [username])
             res = cursor.fetchall()
-
-            print(res)
 
             if len(res) == 0:
                 return "User not found"
@@ -266,7 +268,7 @@ def handle_admin_create_category():
             cursor.execute(id_query)
             connection.commit()
             # Get the returned category ID out
-            category_id = list(cursor.fetchone().values())[0]
+            category_id = get_first_dict_item(cursor.fetchone())
             return redirect(f"/admin/categories/{category_id}")
 
 
@@ -296,6 +298,14 @@ def handle_admin_delete_category(category_id=None):
 
     with get_db() as (connection, cursor):
         try:
+            # Make sure that the category is empty before deleting it
+            number_of_items_query = "SELECT COUNT(*) FROM Products WHERE category_id=?"
+            cursor.execute(number_of_items_query, [category_id])
+            number_of_items = get_first_dict_item(cursor.fetchone())
+            if number_of_items != 0:
+                return redirect(f"/admin/categories/{category_id}?m=There+are+still+{number_of_items}+product(s)+in+this+category")
+
+            # Delete the category
             delete_query = "DELETE FROM Categories WHERE id=?"
             cursor.execute(delete_query, [category_id])
             connection.commit()
