@@ -1,0 +1,19 @@
+{% extends "base.jinja" %}
+{% set title = "Admin - Categories" %}
+{% block pageheading %}
+    New category
+{% endblock pageheading %}
+{% block main %}
+    <form action="{{ url_for('handle_admin_create_category') }}"
+          method="post"
+          class="edit-info-form">
+        <label for="category_name">
+            Name
+            <input type="text"
+                   name="name"
+                   id="category_name"
+                   placeholder="Type a name here"/>
+        </label>
+        <button type="submit">Create category</button>
+    </form>
+{% endblock main %}

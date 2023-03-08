@@ -251,6 +251,25 @@ def handle_admin_categories():
         return render_template("admin/categories.jinja", user=g.user, categories=categories)
 
 
+@server.route("/admin/create-category", methods=["GET", "POST"])
+@admin_only
+def handle_admin_create_category():
+    if request.method == "GET":
+        return render_template("admin/create-category.jinja", user=g.user)
+    elif request.method == "POST":
+        with get_db() as (connection, cursor):
+            name = request.form["name"]
+            create_query = "INSERT INTO Categories (name) VALUES (?)"
+            cursor.execute(create_query, [name])
+            # This is a special SQLite function that gives the ID of the last inserted row
+            id_query = "SELECT last_insert_rowid()"
+            cursor.execute(id_query)
+            connection.commit()
+            # Get the returned category ID out
+            category_id = list(cursor.fetchone().values())[0]
+            return redirect(f"/admin/categories/{category_id}")
+
+
 @server.route("/admin/categories/<category_id>", methods=["GET"])
 @admin_only
 def handle_admin_category_info(category_id=None):
