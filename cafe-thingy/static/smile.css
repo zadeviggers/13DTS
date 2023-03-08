@@ -269,3 +269,39 @@ aside {
   background-color: darkblue;
   color: white;
 }
+
+/***************
+ * Admin Pages *
+ ***************/
+fieldset {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.edit-info-form {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+form :is(button, input, select, textarea) {
+  display: block;
+  padding: 10px;
+  width: 100%;
+}
+
+@media screen and (min-width: 700px) {
+  fieldset {
+    align-items: center;
+  }
+
+  form {
+    align-items: center;
+  }
+
+  form :is(button, input, select, textarea) {
+    display: block;
+    padding: 10px;
+    width: 500px;
+  }
+}

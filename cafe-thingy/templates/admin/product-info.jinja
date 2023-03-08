@@ -30,7 +30,8 @@
             Modify product
         </legend>
         <form action="{{ url_for('handle_admin_update_product', product_id=product.id)}}"
-              method="post">
+              method="post"
+              class="edit-info-form">
             <label for="product_name">
                 Name
                 <input type="text" name="name" id="product_name" value="{{ product.name }}"/>
