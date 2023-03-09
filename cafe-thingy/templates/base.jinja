@@ -48,8 +48,13 @@
                 if (message) {
                     // Show message to user
                     window.alert(message)
+
+                    // Construct new search parms without `m`
+                    params.delete("m")
+                    const newURL = `${window.location.pathname}?${params.toString()}`
+
                     // Remove message from url without adding to history
-                    window.history.replaceState(null, null, window.location.pathname);
+                    window.history.replaceState(null, null, newURL);
                 }
         </script>
         <script>
