@@ -76,7 +76,8 @@ def admin_only(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not g.user:
-            return redirect("/auth?m=You+are+not+logged+in")
+            path = request.path.split("?")[0]
+            return redirect(f"/auth?m=You+are+not+logged+in&return_to={path}")
         if (g.user["admin"] != True):
             return redirect("/?m=You+are+not+an+admin")
         return func(*args, **kwargs)
@@ -168,12 +169,12 @@ def log_out():
 
 @server.route("/", methods=["GET"])
 def handle_home():
-    return render_template("home.jinja", user=g.user)
+    return render_template("pages/home.jinja", user=g.user)
 
 
 @server.route("/contact", methods=["GET"])
 def handle_contact():
-    return render_template("contact.jinja", user=g.user)
+    return render_template("pages/contact.jinja", user=g.user)
 
 
 @server.route("/menu", methods=["GET"])
@@ -191,7 +192,7 @@ def handle_menu(category_id=None):
         cursor.execute("SELECT name, id FROM Categories")
         categories = cursor.fetchall()
 
-        return render_template("menu.jinja", user=g.user, products=products, current_category_id=category_id, categories=categories)
+        return render_template("pages/menu.jinja", user=g.user, products=products, current_category_id=category_id, categories=categories)
 
 
 @server.route("/auth", methods=["GET"])
@@ -199,7 +200,7 @@ def handle_auth():
     if g.user:
         return redirect("/")
 
-    return render_template("auth.jinja")
+    return render_template("pages/auth.jinja")
 
 
 @server.route("/auth/login", methods=["POST"])
@@ -212,7 +213,7 @@ def handle_auth_log_in():
     if result == True:
         return redirect("/")
 
-    return render_template("auth.jinja", failed=result)
+    return render_template("pages/auth.jinja", failed=result)
 
 
 @server.route("/auth/register", methods=["POST"])
@@ -225,23 +226,23 @@ def handle_auth_register():
     if res == True:
         return redirect("/?m=Successfully+logged+in")
 
-    return render_template("auth.jinja", failed=res)
+    return render_template("pages/auth.jinja", failed=res)
 
 
 @server.route("/auth/logout", methods=["GET"])
 def handle_auth_log_out():
     if not g.user:
-        return render_template("auth.jinja", logged_out=False)
+        return render_template("pages/auth.jinja", logged_out=False)
 
     log_out()
 
-    return render_template("auth.jinja", logged_out=True)
+    return render_template("pages/auth.jinja", logged_out=True)
 
 
 @server.route("/admin", methods=["GET"])
 @admin_only
 def handle_admin():
-    return render_template("admin/admin.jinja", user=g.user)
+    return render_template("pages/admin/admin.jinja", user=g.user)
 
 
 @server.route("/admin/categories", methods=["GET"])
@@ -250,14 +251,14 @@ def handle_admin_categories():
     with get_db() as (connection, cursor):
         cursor.execute("SELECT id, name FROM Categories")
         categories = cursor.fetchall()
-        return render_template("admin/categories.jinja", user=g.user, categories=categories)
+        return render_template("pages/admin/categories.jinja", user=g.user, categories=categories)
 
 
 @server.route("/admin/create-category", methods=["GET", "POST"])
 @admin_only
 def handle_admin_create_category():
     if request.method == "GET":
-        return render_template("admin/create-category.jinja", user=g.user)
+        return render_template("pages/admin/create-category.jinja", user=g.user)
     elif request.method == "POST":
         with get_db() as (connection, cursor):
             name = request.form["name"]
@@ -287,7 +288,7 @@ def handle_admin_category_info(category_id=None):
         cursor.execute(products_query, [category_id])
         products_res = cursor.fetchall()
 
-        return render_template("admin/category-info.jinja", user=g.user, category=category_res, products=products_res)
+        return render_template("pages/admin/category-info.jinja", user=g.user, category=category_res, products=products_res)
 
 
 @server.route("/admin/categories/<category_id>/delete", methods=["GET"])
@@ -341,7 +342,7 @@ def handle_admin_products():
         cursor.execute(query)
         res = cursor.fetchall()
 
-        return render_template("admin/products.jinja", user=g.user, products=res)
+        return render_template("pages/admin/products.jinja", user=g.user, products=res)
 
 
 @server.route("/admin/create-product", methods=["GET", "POST"])
@@ -352,7 +353,7 @@ def handle_admin_create_product():
             query = "SELECT id, name FROM Categories"
             cursor.execute(query)
             res = cursor.fetchall()
-            return render_template("admin/create-product.jinja", user=g.user, categories=res)
+            return render_template("pages/admin/create-product.jinja", user=g.user, categories=res)
         elif request.method == "POST":
             name = request.form["name"]
             description = request.form["description"]
@@ -392,7 +393,7 @@ def handle_admin_product_info(product_id=None):
         cursor.execute(categories_query)
         categories_res = cursor.fetchall()
 
-        return render_template("admin/product-info.jinja", user=g.user, product=product_res, product_category=category_res, categories=categories_res)
+        return render_template("pages/admin/product-info.jinja", user=g.user, product=product_res, product_category=category_res, categories=categories_res)
 
 
 @server.route("/admin/products/<product_id>/delete", methods=["GET"])
