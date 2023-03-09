@@ -76,8 +76,7 @@ def admin_only(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not g.user:
-            path = request.path.split("?")[0]
-            return redirect(f"/auth?m=You+are+not+logged+in&return_to={path}")
+            return redirect(f"/auth?m=You+are+not+logged+in")
         if (g.user["admin"] != True):
             return redirect("/?m=You+are+not+an+admin")
         return func(*args, **kwargs)
