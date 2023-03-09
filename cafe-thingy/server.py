@@ -181,10 +181,10 @@ def handle_contact():
 def handle_menu(category_id=None):
     with get_db() as (connection, cursor):
         if category_id is not None:
-            query = "SELECT name, description, image_path, price, size FROM Products WHERE category_id=?"
+            query = "SELECT * FROM Products WHERE category_id=?"
             cursor.execute(query, [category_id])
         else:
-            query = "SELECT name, description, image_path, price, size FROM Products"
+            query = "SELECT * FROM Products"
             cursor.execute(query)
         products = cursor.fetchall()
 
@@ -398,7 +398,7 @@ def handle_admin_product_info(product_id=None):
         return redirect("/admin/products")
 
     with get_db() as (connection, cursor):
-        product_query = "SELECT id, name, description, image_path, price, size, category_id FROM Products WHERE id=?"
+        product_query = "SELECT * FROM Products WHERE id=?"
         cursor.execute(product_query, [product_id])
         product_res = cursor.fetchone()
 
