@@ -11,6 +11,7 @@
     </div>
     <section>
         <h2>Products in {{ category.name }} ({{ products|length }})</h2>
+        <a href="{{ url_for('handle_admin_create_product')}}">Create a product</a>
         <ul>
             {% for item in products %}
                 <li>

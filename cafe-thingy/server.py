@@ -181,10 +181,10 @@ def handle_contact():
 def handle_menu(category_id=None):
     with get_db() as (connection, cursor):
         if category_id is not None:
-            query = "SELECT name, description, image_path, price FROM Products WHERE category_id=?"
+            query = "SELECT name, description, image_path, price, size FROM Products WHERE category_id=?"
             cursor.execute(query, [category_id])
         else:
-            query = "SELECT name, description, image_path, price FROM Products"
+            query = "SELECT name, description, image_path, price, size FROM Products"
             cursor.execute(query)
         products = cursor.fetchall()
 
@@ -269,7 +269,7 @@ def handle_admin_create_category():
             connection.commit()
             # Get the returned category ID out
             category_id = get_first_dict_item(cursor.fetchone())
-            return redirect(f"/admin/categories/{category_id}")
+            return redirect(f"/admin/categories/{category_id}?m=Created+category+{name}")
 
 
 @server.route("/admin/categories/<category_id>", methods=["GET"])
@@ -344,6 +344,35 @@ def handle_admin_products():
         return render_template("admin/products.jinja", user=g.user, products=res)
 
 
+@server.route("/admin/create-product", methods=["GET", "POST"])
+@admin_only
+def handle_admin_create_product():
+    with get_db() as (connection, cursor):
+        if request.method == "GET":
+            query = "SELECT id, name FROM Categories"
+            cursor.execute(query)
+            res = cursor.fetchall()
+            return render_template("admin/create-product.jinja", user=g.user, categories=res)
+        elif request.method == "POST":
+            name = request.form["name"]
+            description = request.form["description"]
+            price = request.form["price"]
+            size = request.form["size"]
+            category = request.form["category"]
+            image_path = request.form["image_path"]
+
+            create_query = "INSERT INTO Products (name, description, price, size, category_id, image_path) VALUES (?, ?, ?, ?, ?, ?)"
+            cursor.execute(
+                create_query, [name, description, price, size, category, image_path])
+            # This is a special SQLite function that gives the ID of the last inserted row
+            id_query = "SELECT last_insert_rowid()"
+            cursor.execute(id_query)
+            connection.commit()
+            # Get the returned category ID out
+            category_id = get_first_dict_item(cursor.fetchone())
+            return redirect(f"/admin/products/{category_id}?m=Created+product+{name}")
+
+
 @server.route("/admin/products/<product_id>", methods=["GET"])
 @admin_only
 def handle_admin_product_info(product_id=None):
@@ -351,7 +380,7 @@ def handle_admin_product_info(product_id=None):
         return redirect("/admin/products")
 
     with get_db() as (connection, cursor):
-        product_query = "SELECT id, name, description, image_path, price, category_id FROM Products WHERE id=?"
+        product_query = "SELECT id, name, description, image_path, price, size, category_id FROM Products WHERE id=?"
         cursor.execute(product_query, [product_id])
         product_res = cursor.fetchone()
 
@@ -391,9 +420,16 @@ def handle_admin_update_product(product_id=None):
 
     with get_db() as (connection, cursor):
         try:
-            product_query = "UPDATE Products SET name=?, description=?, price=?, category_id=?  WHERE id=?"
+            name = request.form["name"]
+            description = request.form["description"]
+            price = request.form["price"]
+            size = request.form["size"]
+            category = request.form["category"]
+            image_path = request.form["image_path"]
+
+            product_query = "UPDATE Products SET name=?, description=?, price=?, size=?, category_id=?, image_path=?  WHERE id=?"
             cursor.execute(product_query, [
-                           request.form["name"], request.form["description"], request.form["price"], request.form["category"], product_id])
+                           name, description, price, size, category, image_path, product_id])
             connection.commit()
             return redirect(f"/admin/products/{product_id}?m=Successfully+updated+product+{product_id}")
         except Exception as e:

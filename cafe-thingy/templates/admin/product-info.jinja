@@ -10,17 +10,8 @@
         <a href="{{ url_for('handle_admin_products')}}" class="back-link">Products</a>
     </div>
     <span>Category: <a href="{{ url_for('handle_admin_category_info', category_id=product_category.id)}}">{{ product_category.name }}</a></span>
-    <section class="product">
-        <img height="500"
-             width="500"
-             src="{{ url_for('static', filename='images/'+product.image_path)}}"
-             class="product-image"
-             alt="A photo of a {{ product.name }}"/>
-        <div class="product-info">
-            <span class="product-name">{{ product.name }}</span>
-            <span class="product-description">{{ product.description }}</span>
-        </div>
-        <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
+    <section>
+        {{ components.productCard(product) }}
     </section>
     <section>
         <h2>Actions</h2>
@@ -47,6 +38,10 @@
                            value="{{ product.price }}"
                            step="any"/>
                 </label>
+                <label for="product_size">
+                    Size
+                    <input type="text" name="size" id="product_size" value="{{ product.size }}"  />
+                </label>
                 <label for="product_category">
                     Category
                     <select name="category" id="product_category">
@@ -57,6 +52,13 @@
                             </option>
                         {% endfor %}
                     </select>
+                </label>
+                <label for="product_image_path">
+                    Image path
+                    <input type="text"
+                           name="image_path"
+                           id="product_image_path"
+                           value="{{ product.image_path }}"/>
                 </label>
                 <button type="submit">Save changes</button>
             </form>

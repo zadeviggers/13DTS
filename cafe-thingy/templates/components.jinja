@@ -1,0 +1,14 @@
+{% macro productCard(product)%}
+    <div class="product">
+        <img height="500"
+             width="500"
+             src="{{ url_for('static', filename='images/'+product.image_path)}}"
+             class="product-image"
+             alt="A photo of a {{ product.name }}"/>
+        <div class="product-info">
+            <span class="product-name">{{ product.name }}</span>
+            <span class="product-description">{{ product.description }}</span>
+        </div>
+        <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
+    </div>
+{% endmacro %}
