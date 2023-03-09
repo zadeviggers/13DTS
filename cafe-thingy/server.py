@@ -10,6 +10,8 @@ bcrypt = Bcrypt(server)
 
 server.secret_key = os.urandom(69)
 
+ADMIN_CODE = "password123"
+
 
 def db_dict_factory(cursor, row):
     # Used to return database query results as dictionaries.
@@ -100,9 +102,12 @@ def try_create_account() -> bool:
     display_name = request.form["display_name"]
     username = request.form["username"]
     password = request.form["password"]
+    req_admin_code = request.form["admin_code"]
 
     if not display_name or not username or not password:
         return False
+
+    admin = req_admin_code == ADMIN_CODE
 
     encrypted_password = bcrypt.generate_password_hash(password)
 
@@ -115,12 +120,12 @@ def try_create_account() -> bool:
                 return "Username already taken"
 
             cursor.execute(
-                "INSERT INTO Users (admin, display_name, username, password) VALUES (0,?,?,?)",
-                [display_name, username, encrypted_password])
+                "INSERT INTO Users (admin, display_name, username, password) VALUES (?,?,?,?)",
+                [1 if admin else 0, display_name, username, encrypted_password])
             connection.commit()
             session['username'] = username
             session['display_name'] = display_name
-            session['admin'] = False
+            session['admin'] = admin
 
             return True
         except Exception as e:
