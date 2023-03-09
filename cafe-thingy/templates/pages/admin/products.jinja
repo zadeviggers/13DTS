@@ -8,6 +8,9 @@
         <a href="{{ url_for('handle_admin')}}" class="back-link">Admin</a>
     </div>
     <a href="{{ url_for('handle_admin_create_product')}}">Create a product</a>
+    <a href="{{ url_for('handle_admin_delete_random_product')}}"
+       class="danger-text"
+       data-confirm>Delete a random product</a>
     <section>
         <h2>All products ({{ products|length }})</h2>
         <ul>

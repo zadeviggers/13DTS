@@ -373,6 +373,24 @@ def handle_admin_create_product():
             return redirect(f"/admin/products/{category_id}?m=Created+product+{name}")
 
 
+@server.route("/admin/delete-random-product", methods=["GET"])
+@admin_only
+def handle_admin_delete_random_product():
+    with get_db() as (connection, cursor):
+        try:
+            id_query = "SELECT id FROM Products ORDER BY RANDOM() LIMIT 1"
+            cursor.execute(id_query)
+            product_id = cursor.fetchone()["id"]
+
+            delete_query = "DELETE FROM Products WHERE id=?"
+            cursor.execute(delete_query, [product_id])
+            connection.commit()
+            return redirect(f"/admin/products?m=Successfully+deleted+product+{product_id}")
+        except Exception as e:
+            print(e)
+            return redirect(f"/admin/products/{product_id}?m=Failed+to+delete+product")
+
+
 @server.route("/admin/products/<product_id>", methods=["GET"])
 @admin_only
 def handle_admin_product_info(product_id=None):
