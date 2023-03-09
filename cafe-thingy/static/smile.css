@@ -38,6 +38,11 @@ main {
   padding: 15px;
 }
 
+.user-name {
+  font-weight: bold;
+  font-style: italic;
+}
+
 /* Generic site-wide styles */
 
 a.back-link::before {

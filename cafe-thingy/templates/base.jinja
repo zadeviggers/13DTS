@@ -21,7 +21,7 @@
                     <a href="{{ url_for('handle_contact') }}">Contact us</a>
                     {% if user %}
                         {% if user.admin %}<a href="{{ url_for('handle_admin') }}">Admin</a>{% endif %}
-                        <span>Logged in as {{ user["display_name"] }}</span>
+                        <span class="user-name">{{ user["display_name"] }}</span>
                         <a href="{{ url_for('handle_auth_log_out') }}">Log out</a>
                     {% else %}
                         <a href="{{ url_for('handle_auth') }}">Log in or Regsiter</a>
