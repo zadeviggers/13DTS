@@ -19,5 +19,15 @@ CREATE TABLE "Users" (
 	"display_name"	TEXT NOT NULL,
 	"username"	TEXT NOT NULL,
 	"password"	TEXT NOT NULL,
-	"admin"	INTEGER NOT NULL DEFAULT 0 COLLATE BINARY
+	"admin"	INTEGER NOT NULL DEFAULT 0 COLLATE BINARY,
+	"id"	INTEGER NOT NULL UNIQUE,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+
+CREATE TABLE "Cart_Items" (
+	"product_id"	INTEGER NOT NULL,
+	"user_id"	INTEGER NOT NULL,
+	"product_quantity"	INTEGER NOT NULL,
+	FOREIGN KEY("product_id") REFERENCES "Products"("id"),
+	FOREIGN KEY("user_id") REFERENCES "Users"("id")
 );
