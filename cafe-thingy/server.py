@@ -96,43 +96,6 @@ def load_user():
     g.user = user
 
 
-def try_create_account() -> bool:
-    # Try to create and account log the user in,
-    # and return True if it works, or and error string if it doesn't.
-    display_name = request.form["display_name"]
-    username = request.form["username"]
-    password = request.form["password"]
-    req_admin_code = request.form["admin_code"]
-
-    if not display_name or not username or not password:
-        return False
-
-    admin = req_admin_code == ADMIN_CODE
-
-    encrypted_password = bcrypt.generate_password_hash(password)
-
-    with get_db() as (connection, cursor):
-        try:
-            cursor.execute(
-                "SELECT username FROM Users WHERE username=?", [username])
-            res = cursor.fetchall()
-            if len(res) > 0:
-                return "Username already taken"
-
-            cursor.execute(
-                "INSERT INTO Users (admin, display_name, username, password) VALUES (?,?,?,?)",
-                [1 if admin else 0, display_name, username, encrypted_password])
-            connection.commit()
-            session['username'] = username
-            session['display_name'] = display_name
-            session['admin'] = admin
-
-            return True
-        except Exception as e:
-            print(f"Failed to create account: {e}")
-            return str(e)
-
-
 def try_log_in():
     # Try to log the user in, and return True if it works,
     # or and error message if it doesn't.
@@ -225,12 +188,40 @@ def handle_auth_register():
     if g.user:
         return redirect("/?m=Already+logged+in")
 
-    res = try_create_account()
+    # Try to create and account log the user in.
+    display_name = request.form["display_name"]
+    username = request.form["username"]
+    password = request.form["password"]
+    req_admin_code = request.form["admin_code"]
 
-    if res == True:
-        return redirect("/?m=Successfully+logged+in")
+    if not display_name or not username or not password:
+        return False
 
-    return render_template("pages/auth.jinja", failed=res)
+    admin = req_admin_code == ADMIN_CODE
+
+    encrypted_password = bcrypt.generate_password_hash(password)
+
+    with get_db() as (connection, cursor):
+        try:
+            cursor.execute(
+                "SELECT username FROM Users WHERE username=?", [username])
+            res = cursor.fetchall()
+
+            if len(res) > 0:
+                return render_template("pages/auth.jinja", failed="Username already taken")
+
+            cursor.execute(
+                "INSERT INTO Users (admin, display_name, username, password) VALUES (?,?,?,?)",
+                [1 if admin else 0, display_name, username, encrypted_password])
+            connection.commit()
+            session['username'] = username
+            session['display_name'] = display_name
+            session['admin'] = admin
+
+            return redirect("/?m=Successfully+registered")
+        except Exception as e:
+            print(f"Failed to create account: {e}")
+            return render_template("pages/auth.jinja", failed=str(e))
 
 
 @server.route("/auth/logout", methods=["GET"])
