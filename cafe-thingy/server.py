@@ -127,13 +127,6 @@ def try_log_in():
             return str(e)
 
 
-def log_out():
-    # Remove all keys from the user session thingy
-    session.pop('username', None)
-    session.pop('display_name', None)
-    session.pop('admin', None)
-
-
 @server.route("/", methods=["GET"])
 def handle_home():
     return render_template("pages/home.jinja", user=g.user)
@@ -229,7 +222,10 @@ def handle_auth_log_out():
     if not g.user:
         return render_template("pages/auth.jinja", logged_out=False)
 
-    log_out()
+    # Remove all keys from the user session thingy
+    session.pop('username', None)
+    session.pop('display_name', None)
+    session.pop('admin', None)
 
     return render_template("pages/auth.jinja", logged_out=True)
 
