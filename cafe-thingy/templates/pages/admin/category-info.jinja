@@ -9,9 +9,9 @@
         /
         <a href="{{ url_for('handle_admin_categories')}}" class="back-link">Categories</a>
     </div>
+    <a href="{{ url_for('handle_admin_create_product', default_category_id=category.id)}}">Create a product in this category</a>
     <section>
         <h2>Products in {{ category.name }} ({{ products|length }})</h2>
-        <a href="{{ url_for('handle_admin_create_product')}}">Create a product</a>
         <ul>
             {% for item in products %}
                 <li>

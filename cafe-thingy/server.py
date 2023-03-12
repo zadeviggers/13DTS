@@ -335,7 +335,9 @@ def handle_admin_create_product():
             query = "SELECT id, name FROM Categories"
             cursor.execute(query)
             res = cursor.fetchall()
-            return render_template("pages/admin/create-product.jinja", user=g.user, categories=res)
+            return render_template("pages/admin/create-product.jinja",
+                                   user=g.user, categories=res,
+                                   default_category_id=request.args.get("default_category_id"))
         elif request.method == "POST":
             name = request.form["name"]
             description = request.form["description"]

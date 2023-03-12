@@ -31,7 +31,8 @@
             Category
             <select name="category" id="product_category">
                 {% for category in categories %}
-                    <option value="{{ category.id }}">
+                    <option value="{{ category.id }}"
+                            {% if default_category_id and category.id == default_category_id|int %}selected{% endif %}>
                         {{ category.name }}
                     </option>
                 {% endfor %}
