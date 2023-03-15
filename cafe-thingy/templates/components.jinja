@@ -15,3 +15,16 @@ in any template that imports this file #}
         <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
     </div>
 {% endmacro %}
+{% macro textField(name, label, prefix=None, textarea=False, required=True)%}
+    <label for="{{ name }}">
+        {{ label }}
+        <div class="input-wrapper">
+            {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
+            {% if textarea %}
+                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %} {{ arg+'="'+kwargs[arg]+'"' }}{% endfor %} {% if textarea %}></textarea>
+            {% else %}
+                />
+            {% endif %}
+        </div>
+    </label>
+{% endmacro %}

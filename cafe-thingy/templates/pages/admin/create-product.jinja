@@ -7,26 +7,11 @@
     <form action="{{ url_for('handle_admin_create_product') }}"
           method="post"
           class="edit-info-form">
-        <label for="product_name">
-            Name
-            <input type="text" name="name" id="product_name"/>
-        </label>
-        <label for="product_description">
-            Description
-            <textarea type="text" name="description" id="product_description"></textarea>
-        </label>
-        <label for="product_price">
-            Price
-            <input type="number" name="price" id="product_price" step="any"/>
-        </label>
-        <label for="product_size">
-            Size
-            <input type="text" name="size" id="product_size" />
-        </label>
-        <label for="product_image_path">
-            Image path
-            <input type="text" name="image_path" id="product_image_path" />
-        </label>
+        {{ components.textField("name", "Name")}}
+        {{ components.textField("description", "Description", textarea=True)}}
+        {{ components.textField("price", "Price", type="number", step="0.1")}}
+        {{ components.textField("size", "Size")}}
+        {{ components.textField("image_path", "Image path")}}
         <label for="product_category">
             Category
             <select name="category" id="product_category">
