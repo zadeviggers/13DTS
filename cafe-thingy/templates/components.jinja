@@ -28,10 +28,10 @@ in any template that imports this file. #}
                 {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
             {% endif %}
             {% if textarea %}
-                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %} {{ arg+'="'+kwargs[arg]+'"' }}{% endfor %} {% if textarea %}></textarea>
+                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %} {{ arg+'="'+kwargs[arg]+'"' }}{% endfor %}  {% if textarea %}></textarea>
             {% else %}
                 />
-            {% endif %}
-            {% if textarea==false %}</div>{% endif %}
-        </label>
-    {% endmacro %}
+            </div>
+        {% endif %}
+    </label>
+{% endmacro %}
