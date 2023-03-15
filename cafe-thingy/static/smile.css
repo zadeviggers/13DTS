@@ -119,6 +119,10 @@ a.back-link::before {
   left: 15px;
 }
 
+.product-add-to-cart-link {
+  margin-bottom: 10px;
+}
+
 @media (max-width: 920px) {
   .menu-list {
     flex-direction: column;

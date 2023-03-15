@@ -11,7 +11,7 @@
     </div>
     <span>Category: <a href="{{ url_for('handle_admin_category_info', category_id=product_category.id)}}">{{ product_category.name }}</a></span>
     <section>
-        {{ components.productCard(product) }}
+        {{ components.productCard(product, show_add_to_cart=false) }}
     </section>
     <section>
         <h2>Actions</h2>

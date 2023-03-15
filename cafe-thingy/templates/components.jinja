@@ -1,7 +1,7 @@
 {# A component can be used like this:
 `{{ components.productCard(product)}}`
 in any template that imports this file #}
-{% macro productCard(product)%}
+{% macro productCard(product, show_add_to_cart=true)%}
     <div class="product">
         <img height="500"
              width="500"
@@ -10,6 +10,7 @@ in any template that imports this file #}
              alt="A photo of a {{ product.name }}"/>
         <div class="product-info">
             <span class="product-name">{{ product.name }}</span>
+            {% if user is not none and show_add_to_cart %}<a href="" class="product-add-to-cart-link">Add to cart</a>{% endif %}
             <span class="product-description">{{ product.description }}</span>
         </div>
         <span class="product-price">${{ '%.2f'|format(product.price) }}</span>
