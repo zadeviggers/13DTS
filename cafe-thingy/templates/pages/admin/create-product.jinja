@@ -9,7 +9,7 @@
           class="edit-info-form">
         {{ components.textField("name", "Name")}}
         {{ components.textField("description", "Description", textarea=True)}}
-        {{ components.textField("price", "Price", type="number", step="0.1")}}
+        {{ components.textField("price", "Price", prefix="$", type="number", step="0.1")}}
         {{ components.textField("size", "Size")}}
         {{ components.textField("image_path", "Image path")}}
         <label for="product_category">

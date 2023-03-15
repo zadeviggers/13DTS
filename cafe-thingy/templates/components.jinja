@@ -1,7 +1,10 @@
+{# Very cool Jinja macros copyright 2023 Zade Viggers. #}
+{# All made by yours truly from scratch. #}
 {# A component can be used like this:
 `{{ components.productCard(product)}}`
-in any template that imports this file #}
+in any template that imports this file. #}
 {% macro productCard(product, show_add_to_cart=true)%}
+    {# Product card for displaying info on a product#}
     <div class="product">
         <img height="500"
              width="500"
@@ -17,15 +20,18 @@ in any template that imports this file #}
     </div>
 {% endmacro %}
 {% macro textField(name, label, prefix=None, textarea=False, required=True)%}
+    {# Versitile text field component for all your input neeeds!#}
     <label for="{{ name }}">
         {{ label }}
-        <div class="input-wrapper">
-            {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
+        {% if textarea==false %}
+            <div class="input-wrapper">
+                {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
+            {% endif %}
             {% if textarea %}
                 <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %} {{ arg+'="'+kwargs[arg]+'"' }}{% endfor %} {% if textarea %}></textarea>
             {% else %}
                 />
             {% endif %}
-        </div>
-    </label>
-{% endmacro %}
+            {% if textarea==false %}</div>{% endif %}
+        </label>
+    {% endmacro %}
