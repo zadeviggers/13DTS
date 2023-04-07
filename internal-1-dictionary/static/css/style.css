@@ -7,28 +7,70 @@
 }
 
 :root {
-	--small: 10px;
-	--medium: 20px;
-	--big: 30px;
-	--very-big: 40px;
 }
 
+/* Page layout on desktop screens */
 body {
-	display: flex;
-	flex-direction: column;
+	display: grid;
 	min-height: 100vh;
+
+	/* Variables for easy tweaking */
+	--categories-width: 300px; /* Only used in desktop layout */
+	--navbar-height: 40px;
+	--footer-height: 40px;
+
+	/* Page layout */
+	grid-template-columns: var(--categories-width) auto;
+	grid-template-rows: var(--navbar-height) auto var(--footer-height);
+	grid-template-areas:
+		"header header"
+		"categories main"
+		"footer footer";
+}
+
+/* Page layout on mobile screens*/
+@media screen and (max-width: 800px) {
+	body {
+		grid-template-columns: auto;
+		grid-template-rows: var(--navbar-height) 1fr auto var(--footer-height);
+		grid-template-areas:
+			"header"
+			"main"
+			"categories"
+			"footer";
+	}
 }
 
 header {
+	/* Page layout */
+	grid-area: "header";
+	/* Make it span all the columns */
+	grid-column: 1/-1;
+
+	/* Element layout */
 	display: flex;
-	align-items: baseline;
-	padding: var(--small);
+	align-items: center;
 }
 
-nav {
+header #nav-links {
 	margin-left: auto;
 }
 
+#categories {
+	/* Page layout */
+	grid-area: categories;
+}
+
 main {
-	flex: 1;
+	/* Page layout */
+	grid-area: main;
+}
+
+footer {
+	/* Page layout */
+	grid-area: footer;
+
+	/* Element layout */
+	display: flex;
+	align-items: center;
 }
