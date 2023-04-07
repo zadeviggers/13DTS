@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="{{ url_for('static', filename='css/style.css') }}"
+              rel="stylesheet"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ title }} - Māori to English dictionary</title>
+    </head>
+    <body>
+        <header>
+            <h1>{{ title }}</h1>
+            <nav>
+                <a href="\">Home</a>
+            </nav>
+        </header>
+        <main>
+            {% block main %}
+            {% endblock main %}
+        </main>
+        <footer>
+            <p>Copyright Zade Viggers 2023</p>
+        </footer>
+    </body>
+</html>
