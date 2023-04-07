@@ -1,6 +1,6 @@
 from functools import wraps
 from typing import Tuple
-from flask import Flask, render_template, redirect, request, session, g
+from flask import Flask, abort, render_template, redirect, request, session, g
 from flask_bcrypt import Bcrypt
 import sqlite3
 from contextlib import contextmanager
@@ -25,8 +25,7 @@ def db_dict_factory(cursor, row):
     return d
 
 
-@contextmanager
-def get_db() -> Generator[Tuple[sqlite3.Connection, sqlite3.Cursor], None, None]:
+def get_db() -> sqlite3.Connection:
     # Custom context manager for getting a database connection,
     # based on the example from the docs https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
     # This means that the database connection is closed cleanly when it's no longer needed.
@@ -39,12 +38,8 @@ def get_db() -> Generator[Tuple[sqlite3.Connection, sqlite3.Cursor], None, None]
     # Code to acquire resource.
     db_connection = sqlite3.connect("dictionary.db")
     db_connection.row_factory = db_dict_factory
-    db_cursor = db_connection.cursor()
-    try:
-        yield (db_connection, db_cursor)
-    finally:
-        # Code to release resource.
-        db_connection.close()
+
+    return db_connection
 
 
 def get_first_dict_item(thing: dict):
@@ -65,7 +60,7 @@ def teacher_only(func):
     return wrapper
 
 
-def get_user(cursor: sqlite3.Cursor):
+def get_user():
     # Return the current user session,
     # or return False if there is none.
 
@@ -73,9 +68,9 @@ def get_user(cursor: sqlite3.Cursor):
     if ("id" in session):
         id = session["id"]
 
-        cursor.execute(
+        g.cursor.execute(
             "SELECT Name, Teacher FROM Users WHERE ID = ?", [id])
-        result = cursor.fetchone()
+        result = g.cursor.fetchone()
 
         if result is None:
             return False
@@ -89,35 +84,65 @@ def get_user(cursor: sqlite3.Cursor):
     return False
 
 
-def get_categories(cursor: sqlite3.Cursor):
-    # A helper function to get a list of all the categories.
-    query = "SELECT ID, EnglishName from Categories"
-    cursor.execute(query)
-    res = cursor.fetchall()
-    return res
-
-
 @server.before_request
-def load_globals():
+def before_request():
     # This function runs before the request handler on each request.
     # Docs: https://flask.palletsprojects.com/en/2.2.x/api/#flask.Flask.before_request
 
-    with get_db() as (connection, cursor):
+    # Get a single db connection for the whole request to use
+    # Docs: https://flask.palletsprojects.com/en/2.2.x/api/?highlight=g#flask.g
+    g.db = get_db()
+    # Also a cursor
+    g.cursor = g.db.cursor()
 
-        # Get the user and stick it on the globally available object
-        # Docs: https://flask.palletsprojects.com/en/2.2.x/api/?highlight=g#flask.g
-        user = get_user(cursor)
-        g.user = user
+    # Get the user and stick it on the globally available object
 
-        # Also add the list of categories to the global object
-        categories = get_categories(cursor)
-        g.categories = categories
+    g.user = get_user()
+
+    # Also add the list of categories to the global object
+    categories_query = "SELECT ID, EnglishName from Categories"
+    g.cursor.execute(categories_query)
+    categories = g.cursor.fetchall()
+    g.categories = categories
+
+
+@server.teardown_request
+def teardown_request(error):
+    # This function is always run after a request happens.
+    # Docs: https://flask.palletsprojects.com/en/2.2.x/api/#flask.Flask.teardown_request
+
+    # Close the database connection
+    g.db.close()
 
 
 @server.route("/", methods=["GET"])
-def handle_home():
-    # The main homepage
-    return render_template("pages/home.jinja", categories=g.categories, user=g.user)
+def home_page():
+    # The main homepage, which shows all the words
+
+    words_query = "SELECT * FROM Words"
+    g.cursor.execute(words_query)
+    words = g.cursor.fetchall()
+
+    return render_template("pages/home.jinja", words=words, categories=g.categories, user=g.user)
+
+
+@server.route("/categories/<id>", methods=["GET"])
+def specific_category_page(id):
+    # Page for just showing words in one category
+
+    category = None
+    for _category in g.categories:
+        if str(_category["ID"]) == id:
+            category = _category
+
+    if category == None:
+        abort(404)
+
+    category_words_query = "SELECT * FROM Words WHERE CategoryID = ?"
+    g.cursor.execute(category_words_query, [category["ID"]])
+    category_words = g.cursor.fetchall()
+
+    return render_template("pages/specific_category.jinja", category=category, words=category_words, categories=g.categories, user=g.user)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,8 @@
+{% extends "base.jinja" %}
+{% set title=category.EnglishName %}
+{% block main %}
+    <h1>Words in {{ category.EnglishName }}:</h1>
+    <ul>
+        {% for word in words %}<li>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</li>{% endfor %}
+    </ul>
+{% endblock main %}

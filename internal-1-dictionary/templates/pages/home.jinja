@@ -1,10 +1,5 @@
 {% extends "base.jinja" %}
 {% set title="Home" %}
-{% block title %}
-    Maōri Dictionary | Home
-{% endblock title %}
-{% block heading %}
-    Maōri - English Dictionary
-{% endblock heading %}
 {% block main %}
+    {% for word in words %}<li>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</li>{% endfor %}
 {% endblock main %}

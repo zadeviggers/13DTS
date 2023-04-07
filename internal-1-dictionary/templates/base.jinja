@@ -8,20 +8,20 @@
     </head>
     <body>
         <header>
-            <h1>{{ title }}</h1>
-            <nav id="nav-links">
-                <a href="\">Home</a>
-            </nav>
+            <a href="{{ url_for('home_page') }}" id="site-title">Māori to English dictionary</a>
         </header>
-        <nav id="categories">
-            <ul>
-                {% for category in categories %}
-                    <li>
-                        <a href="{{ category.id }}">{{ category.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </nav>
+        <section id="categories-container">
+            <nav id="categories">
+                Categories:
+                <ul>
+                    {% for category in categories %}
+                        <li>
+                            <a href="{{ url_for('specific_category_page', id=category.ID) }}">{{ category.EnglishName }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </section>
         <main>
             {% block main %}
             {% endblock main %}
