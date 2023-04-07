@@ -1,5 +1,6 @@
 {% extends "base.jinja" %}
 {% set title="Home" %}
 {% block main %}
+    <h1>Home</h1>
     {% for word in words %}<li>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</li>{% endfor %}
 {% endblock main %}
