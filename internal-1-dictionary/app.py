@@ -119,10 +119,12 @@ def teardown_request(error):
 def home_page():
     # The main homepage, which shows all the words
 
+    # Get all the words
     words_query = "SELECT * FROM Words"
     g.cursor.execute(words_query)
     words = g.cursor.fetchall()
 
+    # Render the page
     return render_template("pages/home.jinja", words=words, categories=g.categories, user=g.user)
 
 
@@ -136,6 +138,7 @@ def specific_category_page(id):
         if str(_category["ID"]) == id:
             category = _category
 
+    # If a category couldn't be found, 404 error
     if category == None:
         abort(404)
 
@@ -144,6 +147,7 @@ def specific_category_page(id):
     g.cursor.execute(category_words_query, [category["ID"]])
     category_words = g.cursor.fetchall()
 
+    # Render the page
     return render_template("pages/specific_category.jinja", category=category, words=category_words, categories=g.categories, user=g.user)
 
 
@@ -151,19 +155,21 @@ def specific_category_page(id):
 def specific_word_page(id):
     # Page for just showing words in one category
 
+    # Select the word from the database using the ID
     word_query = "SELECT * FROM Words WHERE ID = ?"
     g.cursor.execute(word_query, [id])
     word = g.cursor.fetchone()
 
-    print(word)
-
+    # If no word with that ID is found, 404 error
     if word == None:
         abort(404)
 
+    # Get the category for that word
     category_query = "SELECT * FROM Categories WHERE ID = ?"
     g.cursor.execute(category_query, [word["CategoryID"]])
     category = g.cursor.fetchone()
 
+    # Render the pages
     return render_template("pages/specific_word.jinja", category=category, word=word, categories=g.categories, user=g.user)
 
 
