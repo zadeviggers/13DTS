@@ -1,0 +1,31 @@
+{# Very cool Jinja macros copyright 2023 Zade Viggers. #}
+{# All made by yours truly from scratch. #}
+{# A component can be used like this:
+`{{ components.productCard(product)}}`
+in any template that imports this file. #}
+{% macro WordList(words)%}
+    {# A list of words #}
+    <ul>
+        {% for word in words %}
+            <li>
+                <a href="{{ url_for('specific_word_page', id=word.ID)}}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+{% macro TextField(name, label, prefix=None, textarea=False, required=True)%}
+    {# Versitile text field component for all your input neeeds!#}
+    <label for="{{ name }}">
+        {{ label }}
+        {% if textarea==false %}
+            <div class="input-wrapper">
+                {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
+            {% endif %}
+            {% if textarea %}
+                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %} {{ arg+'="'+kwargs[arg]+'"' }}{% endfor %}  {% if textarea %}></textarea>
+            {% else %}
+                />
+            </div>
+        {% endif %}
+    </label>
+{% endmacro %}

@@ -130,6 +130,7 @@ def home_page():
 def specific_category_page(id):
     # Page for just showing words in one category
 
+    # No need to re-query the database, when we already have a list of all the categories
     category = None
     for _category in g.categories:
         if str(_category["ID"]) == id:
@@ -138,11 +139,32 @@ def specific_category_page(id):
     if category == None:
         abort(404)
 
+    # Get the words in that category
     category_words_query = "SELECT * FROM Words WHERE CategoryID = ?"
     g.cursor.execute(category_words_query, [category["ID"]])
     category_words = g.cursor.fetchall()
 
     return render_template("pages/specific_category.jinja", category=category, words=category_words, categories=g.categories, user=g.user)
+
+
+@server.route("/words/<id>", methods=["GET"])
+def specific_word_page(id):
+    # Page for just showing words in one category
+
+    word_query = "SELECT * FROM Words WHERE ID = ?"
+    g.cursor.execute(word_query, [id])
+    word = g.cursor.fetchone()
+
+    print(word)
+
+    if word == None:
+        abort(404)
+
+    category_query = "SELECT * FROM Categories WHERE ID = ?"
+    g.cursor.execute(category_query, [word["CategoryID"]])
+    category = g.cursor.fetchone()
+
+    return render_template("pages/specific_word.jinja", category=category, word=word, categories=g.categories, user=g.user)
 
 
 if __name__ == "__main__":

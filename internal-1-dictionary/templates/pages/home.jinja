@@ -2,5 +2,5 @@
 {% set title="Home" %}
 {% block main %}
     <h1>Home</h1>
-    {% for word in words %}<li>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</li>{% endfor %}
+    {{ components.WordList(words)}}
 {% endblock main %}

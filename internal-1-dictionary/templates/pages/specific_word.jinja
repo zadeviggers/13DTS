@@ -1,0 +1,9 @@
+{% extends "base.jinja" %}
+{% set title=word.MaoriSpelling + " - " + word.EnglishSpelling %}
+{% block main %}
+    <h1>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}:</h1>
+    <p>{{ word.EnglishDefinition }}</p>
+    <p>
+        In category <a href="{{ url_for('specific_category_page', id=category.ID)}}">{{ category.EnglishName }}</a>
+    </p>
+{% endblock main %}
