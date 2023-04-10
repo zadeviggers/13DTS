@@ -1,0 +1,5 @@
+.vscode/
+emails.txt
+validated-emails.txt
+__pycache__/
+.DS_Store
