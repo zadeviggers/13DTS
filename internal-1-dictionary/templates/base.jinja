@@ -3,12 +3,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link href="{{ url_for('static', filename='css/style.css') }}"
-              rel="stylesheet"/>
+        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ title }} - Māori to English dictionary</title>
     </head>
     <body>
+        <a href="#content" id="skip-navigation-link" tabindex="999">Skip navigation</a>
         <header>
             <a href="{{ url_for('home_page') }}" id="site-title">Māori to English dictionary</a>
         </header>
@@ -24,7 +24,7 @@
                 </ul>
             </nav>
         </section>
-        <main>
+        <main id="content">
             {% block main %}
             {% endblock main %}
         </main>

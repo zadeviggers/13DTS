@@ -20,6 +20,30 @@
 
 	/* Categories list */
 	--categories-padding: 10px;
+
+	/* Magic accent colour */
+	--accent: red;
+	--accent-contrast: black;
+}
+
+/* Only do cool dynamic accent colour if it would work */
+@supports (background-color: AccentColor) and (color: AccentColorText) {
+	:root {
+		--accent: AccentColor;
+		--accent-contrast: AccentColorText;
+	}
+}
+
+/* Accessibility */
+#skip-navigation-link {
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+#skip-navigation-link:focus {
+	visibility: visible;
+	outline: 4px solid var(--accent);
 }
 
 /* Page layout on mobile screens */

@@ -115,6 +115,16 @@ def teardown_request(error):
     g.db.close()
 
 
+@server.context_processor
+def context_processor():
+    # This function is called before rendering a template,
+    # and can pass extra params to the template.
+    return {
+        'categories': g.categories,
+        'user': g.user
+    }
+
+
 @server.route("/", methods=["GET"])
 def home_page():
     # The main homepage, which shows all the words
@@ -125,7 +135,7 @@ def home_page():
     words = g.cursor.fetchall()
 
     # Render the page
-    return render_template("pages/home.jinja", words=words, categories=g.categories, user=g.user)
+    return render_template("pages/home.jinja", words=words)
 
 
 @server.route("/categories/<id>", methods=["GET"])
@@ -148,7 +158,7 @@ def specific_category_page(id):
     category_words = g.cursor.fetchall()
 
     # Render the page
-    return render_template("pages/specific_category.jinja", category=category, words=category_words, categories=g.categories, user=g.user)
+    return render_template("pages/specific_category.jinja", category=category, words=category_words)
 
 
 @server.route("/words/<id>", methods=["GET"])
@@ -170,7 +180,7 @@ def specific_word_page(id):
     category = g.cursor.fetchone()
 
     # Render the pages
-    return render_template("pages/specific_word.jinja", category=category, word=word, categories=g.categories, user=g.user)
+    return render_template("pages/specific_word.jinja", category=category, word=word)
 
 
 if __name__ == "__main__":
