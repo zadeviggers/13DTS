@@ -1,10 +1,7 @@
 from functools import wraps
-from typing import Tuple
 from flask import Flask, abort, render_template, redirect, request, session, g
 from flask_bcrypt import Bcrypt
 import sqlite3
-from contextlib import contextmanager
-from collections.abc import Generator
 import os
 
 # Set up flask and bcrypt
@@ -54,9 +51,10 @@ def teacher_only(func):
     def wrapper(*args, **kwargs):
         if not g.user:
             return redirect(f"/auth?m=You+are+not+logged+in")
-        if (g.user["teacher"] != True):
+        if g.user["teacher"] != True:
             return redirect("/?m=You+are+not+a+teacher")
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -65,21 +63,16 @@ def get_user():
     # or return False if there is none.
 
     # Avoid having to deal with an index error
-    if ("id" in session):
+    if "id" in session:
         id = session["id"]
 
-        g.cursor.execute(
-            "SELECT Name, Teacher FROM Users WHERE ID = ?", [id])
+        g.cursor.execute("SELECT Name, Teacher FROM Users WHERE ID = ?", [id])
         result = g.cursor.fetchone()
 
         if result is None:
             return False
 
-        return {
-            "id": id,
-            "name": result["name"],
-            "teacher": result["teacher"]
-        }
+        return {"id": id, "name": result["name"], "teacher": result["teacher"]}
 
     return False
 
@@ -119,10 +112,7 @@ def teardown_request(error):
 def context_processor():
     # This function is called before rendering a template,
     # and can pass extra params to the template.
-    return {
-        'categories': g.categories,
-        'user': g.user
-    }
+    return {"categories": g.categories, "user": g.user}
 
 
 @server.route("/", methods=["GET"])
@@ -158,7 +148,9 @@ def specific_category_page(id):
     category_words = g.cursor.fetchall()
 
     # Render the page
-    return render_template("pages/specific_category.jinja", category=category, words=category_words)
+    return render_template(
+        "pages/specific_category.jinja", category=category, words=category_words
+    )
 
 
 @server.route("/words/<id>", methods=["GET"])
