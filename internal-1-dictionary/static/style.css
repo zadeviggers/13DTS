@@ -10,9 +10,11 @@
 	/* Variables for easy tweaking */
 
 	/* Main layout */
-	--categories-width: 300px; /* Only used in desktop layout */
 	--navbar-height: 40px;
 	--footer-height: 40px;
+	/* Only used in desktop layout */
+	--categories-width: 250px;
+	--auth-width: 300px;
 
 	/* Footer */
 	--footer-x-padding: 10px;
@@ -20,6 +22,12 @@
 
 	/* Categories list */
 	--categories-padding: 10px;
+
+	/* Auth panel */
+	--auth-padding: 10px;
+
+	/* Disable dark mode */
+	color-scheme: light;
 
 	/* Magic accent colour */
 	--accent: red;
@@ -34,16 +42,10 @@
 	}
 }
 
-/* Accessibility */
-#skip-navigation-link {
-	visibility: hidden;
-	position: fixed;
-	top: 0;
-	left: 0;
-}
-#skip-navigation-link:focus {
-	visibility: visible;
-	outline: 4px solid var(--accent);
+html,
+body {
+	background-color: white;
+	color: black;
 }
 
 /* Page layout on mobile screens */
@@ -53,11 +55,12 @@ body {
 
 	/* Page layout */
 	grid-template-columns: auto;
-	grid-template-rows: var(--navbar-height) 1fr auto var(--footer-height);
+	grid-template-rows: var(--navbar-height) 1fr auto auto var(--footer-height);
 	grid-template-areas:
 		"header"
 		"main"
 		"categories"
+		"auth"
 		"footer";
 }
 
@@ -76,12 +79,12 @@ body {
 @media screen and (min-width: 800px) {
 	body {
 		/* Page layout */
-		grid-template-columns: var(--categories-width) auto;
+		grid-template-columns: var(--categories-width) auto var(--auth-width);
 		grid-template-rows: var(--navbar-height) auto var(--footer-height);
 		grid-template-areas:
-			"header header"
-			"categories main"
-			"footer footer";
+			"header header header"
+			"categories main auth"
+			"footer footer footer";
 	}
 	#categories {
 		position: sticky;
@@ -102,6 +105,17 @@ header {
 	padding-right: var(--header-x-padding);
 }
 
+#auth-container {
+	/* Page layout */
+	grid-area: "auth";
+
+	/* Element layout */
+	padding: var(--auth-padding);
+	display: flex;
+	flex-direction: column;
+	gap: var(--auth-padding);
+}
+
 main {
 	/* Page layout */
 	grid-area: main;
@@ -118,4 +132,93 @@ footer {
 	align-items: center;
 	padding-left: var(--footer-x-padding);
 	padding-right: var(--footer-x-padding);
+}
+
+/* Form styles */
+fieldset {
+	border: 1px solid black;
+}
+
+form,
+fieldset {
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	gap: 10px;
+}
+
+label {
+	display: flex;
+	flex-direction: column;
+}
+
+form textarea {
+	resize: vertical;
+}
+
+form :is(button, input, select, textarea) {
+	padding: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display: block;
+	border-radius: 5px;
+	width: 100%;
+	background-color: white;
+}
+
+form .input-wrapper:has(.input-prefix) input {
+	padding-left: 5px;
+}
+
+form :is(button, .input-wrapper, select, textarea) {
+	border: 2px solid black;
+	border-radius: 5px;
+	width: 100%;
+	color: black;
+}
+label {
+	color: black;
+}
+
+form button:hover {
+	border-color: darkgrey;
+}
+
+form :is(button, select, textarea):focus,
+form .input-wrapper:focus-within {
+	border-color: var(--accent);
+	outline: none;
+}
+
+label:has(button, select, textarea):focus-within {
+	color: var(--accent);
+}
+
+form .input-wrapper {
+	padding: 0px;
+	display: flex;
+	align-items: center;
+}
+
+form .input-wrapper .input-prefix {
+	padding-left: 10px;
+}
+
+form input {
+	flex-basis: 100;
+	padding: 10px;
+}
+
+form button[type="submit"] {
+	padding: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	border-radius: 10px;
+}
+
+form label:has(input[type="checkbox"]) {
+	color: black;
+}
+form label:has(input[type="checkbox"]:checked) {
+	color: var(--accent);
 }

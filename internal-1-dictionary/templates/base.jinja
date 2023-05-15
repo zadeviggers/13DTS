@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet"/>
+        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{{ title }} - Māori to English dictionary</title>
     </head>
     <body>
-        <a href="#content" id="skip-navigation-link" tabindex="999">Skip navigation</a>
         <header>
             <a href="{{ url_for('home_page') }}" id="site-title">Māori to English dictionary</a>
         </header>
@@ -28,6 +27,31 @@
             {% block main %}
             {% endblock main %}
         </main>
+        {# Login form #}
+        <section id="auth-container">
+            <fieldset form="login">
+                <legend>Login</legend>
+                <form action="{#{{ url-for('handle_log_in')}}#}" id="login" method="post">
+                    {{ components.TextField("username", "Username") }}
+                    {{ components.TextField("password", "Password") }}
+                    <button type="submit">Log in</button>
+                </form>
+            </fieldset>
+            <fieldset form="sign-up">
+                <legend>Sign up</legend>
+                <form action="{#{{ url-for('handle_sign_up')}}#}"
+                      id="sign-up"
+                      method="post">
+                    {{ components.TextField("username", "Username") }}
+                    {{ components.TextField("password", "Password") }}
+                    <label for="is-teacher">
+                        Are you a teacher?
+                        <input type="checkbox" name="is-teacher" id="is-teacher">
+                    </label>
+                    <button type="submit">Sign up</button>
+                </form>
+            </fieldset>
+        </section>
         <footer>
             <p>Copyright Zade Viggers 2023</p>
         </footer>
