@@ -27,33 +27,58 @@
             {% block main %}
             {% endblock main %}
         </main>
-        {# Login form #}
+        {# Auth section #}
         <section id="auth-container">
-            <fieldset form="login">
-                <legend>Login</legend>
-                <form action="{#{{ url-for('handle_log_in')}}#}" id="login" method="post">
-                    {{ components.TextField("username", "Username") }}
-                    {{ components.TextField("password", "Password") }}
-                    <button type="submit">Log in</button>
-                </form>
-            </fieldset>
-            <fieldset form="sign-up">
-                <legend>Sign up</legend>
-                <form action="{#{{ url-for('handle_sign_up')}}#}"
-                      id="sign-up"
-                      method="post">
-                    {{ components.TextField("username", "Username") }}
-                    {{ components.TextField("password", "Password") }}
-                    <label for="is-teacher">
-                        Are you a teacher?
-                        <input type="checkbox" name="is-teacher" id="is-teacher">
-                    </label>
-                    <button type="submit">Sign up</button>
-                </form>
-            </fieldset>
+            <div id="auth">
+                {# Login & signup forms #}
+                {% if user == false %}
+                    <fieldset form="login">
+                        <legend>Login</legend>
+                        <form action="{{ url_for('handle_log_in') }}" id="login" method="post">
+                            {{ components.TextField("log-in-username", "Username") }}
+                            {{ components.TextField("log-in-password", "Password", type="password") }}
+                            <button type="submit">Log in</button>
+                        </form>
+                    </fieldset>
+                    <fieldset form="sign-up">
+                        <legend>Sign up</legend>
+                        <form action="{{ url_for('handle_sign_up') }}" id="sign-up" method="post">
+                            {{ components.TextField("sign-up-username", "Username") }}
+                            {{ components.TextField("sign-up-password", "Password", type="password") }}
+                            <label for="is-teacher">
+                                Are you a teacher?
+                                <input type="checkbox" name="is-teacher" id="is-teacher" />
+                            </label>
+                            <button type="submit">Sign up</button>
+                        </form>
+                    </fieldset>
+                {% else %}
+                    <span>Logged in as {{ user.username }}.</span>
+                    <a href="">Logout</a>
+                {% endif %}
+            </div>
         </section>
         <footer>
             <p>Copyright Zade Viggers 2023</p>
         </footer>
+        {# Messages #}
+        <script>
+            // Don't show the alert until the page has loaded
+            document.addEventListener("DOMContentLoaded", () => {
+                const params = new URLSearchParams(location.search)
+                const message = params.get("m")
+                if (message) {
+                    // Show message to user
+                    window.alert(message)
+
+                    // Construct new search parms without `m`
+                    params.delete("m")
+                    const newURL = `${window.location.pathname}?${params.toString()}`
+
+                    // Remove message from url without adding to history
+                    window.history.replaceState(null, null, newURL);
+                }
+            });
+        </script>
     </body>
 </html>

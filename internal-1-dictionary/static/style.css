@@ -75,6 +75,19 @@ body {
 	list-style-type: none;
 }
 
+#auth-container {
+	/* Page layout */
+	grid-area: auth;
+}
+
+#auth {
+	/* Element layout */
+	padding: var(--auth-padding);
+	display: flex;
+	flex-direction: column;
+	gap: var(--auth-padding);
+}
+
 /* Page layout on desktop screens*/
 @media screen and (min-width: 800px) {
 	body {
@@ -90,11 +103,15 @@ body {
 		position: sticky;
 		top: 0;
 	}
+	#auth {
+		position: sticky;
+		top: 0;
+	}
 }
 
 header {
 	/* Page layout */
-	grid-area: "header";
+	grid-area: header;
 	/* Make it span all the columns */
 	grid-column: 1/-1;
 
@@ -103,17 +120,6 @@ header {
 	align-items: center;
 	padding-left: var(--header-x-padding);
 	padding-right: var(--header-x-padding);
-}
-
-#auth-container {
-	/* Page layout */
-	grid-area: "auth";
-
-	/* Element layout */
-	padding: var(--auth-padding);
-	display: flex;
-	flex-direction: column;
-	gap: var(--auth-padding);
 }
 
 main {
@@ -205,7 +211,7 @@ form .input-wrapper .input-prefix {
 }
 
 form input {
-	flex-basis: 100;
+	/* flex-basis: 100; */
 	padding: 10px;
 }
 

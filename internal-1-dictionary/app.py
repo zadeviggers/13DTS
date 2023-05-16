@@ -8,8 +8,7 @@ import os
 server = Flask(__name__)
 bcrypt = Bcrypt(server)
 
-# Generate a random key each time the server restarts.
-server.secret_key = os.urandom(69)
+server.secret_key = "top-secrete"
 
 
 def db_dict_factory(cursor, row):
@@ -66,13 +65,13 @@ def get_user():
     if "id" in session:
         id = session["id"]
 
-        g.cursor.execute("SELECT Name, Teacher FROM Users WHERE ID = ?", [id])
+        g.cursor.execute("SELECT Username, Teacher FROM Users WHERE ID = ?", [id])
         result = g.cursor.fetchone()
 
         if result is None:
             return False
 
-        return {"id": id, "name": result["name"], "teacher": result["teacher"]}
+        return {"id": id, "username": result["Username"], "teacher": result["Teacher"]}
 
     return False
 
@@ -173,6 +172,82 @@ def specific_word_page(id):
 
     # Render the pages
     return render_template("pages/specific_word.jinja", category=category, word=word)
+
+
+@server.route("/login", methods=["POST"])
+def handle_log_in():
+    if g.user:
+        return redirect("/?m=Already%20logged%20in")
+
+    # Try to log the user in, and return True if it works,
+    # or and error message if it doesn't.
+    username = request.form["log-in-username"]
+    password = request.form["log-in-password"]
+
+    try:
+        g.cursor.execute(
+            "SELECT Username, Teacher, PasswordHash, ID FROM Users WHERE Username=?",
+            [username],
+        )
+        res = g.cursor.fetchall()
+
+        if len(res) == 0:
+            return redirect("/?m=User+not+found")
+
+        user = res[0]
+
+        matches = bcrypt.check_password_hash(user["PasswordHash"], password)
+
+        if not matches:
+            return redirect("/?m=Password+is+wrong")
+
+        session["id"] = user["ID"]
+        return redirect("/")
+    except Exception as e:
+        print(f"Failed to create account: {e}")
+        return redirect(f"/?m={str(e)}")
+
+
+@server.route("/sign-up", methods=["POST"])
+def handle_sign_up():
+    if g.user:
+        return redirect("/?m=Already+logged+in")
+
+    # Try to create and account log the user in.
+    # Get the username and password form the form
+    username = request.form["sign-up-username"]
+    password = request.form["sign-up-password"]
+    # Checkboxes only send their value if they're checked
+    is_teacher = "is-teacher" in request.form
+
+    if not username or not password:
+        return False
+
+    encrypted_password = bcrypt.generate_password_hash(password)
+
+    try:
+        g.cursor.execute("SELECT Username FROM Users WHERE Username=?", [username])
+        res = g.cursor.fetchall()
+
+        if len(res) > 0:
+            return redirect("/?m=Username already taken")
+
+        g.cursor.execute(
+            "INSERT INTO Users (Teacher, Username, PasswordHash) VALUES (?,?,?)",
+            [1 if is_teacher else 0, username, str(encrypted_password)],
+        )
+        g.db.commit()
+
+        # Get the ID of the created row
+        # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
+        g.cursor.execute("SELECT last_insert_rowid()")
+        id = g.cursor.fetchone()["last_insert_rowid()"]
+        session["id"] = id
+
+        return redirect("/?m=Successfully+registered")
+    except Exception as e:
+        print(f"Failed to create account: {e}")
+        return redirect(f"/?m={str(e)}")
 
 
 if __name__ == "__main__":
