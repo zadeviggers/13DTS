@@ -250,5 +250,16 @@ def handle_sign_up():
         return redirect(f"/?m={str(e)}")
 
 
+@server.route("/logout", methods=["POST", "GET"])
+def handle_log_out():
+    if g.user == False:
+        return redirect("/?m=Not+logged+in")
+
+    # Log user out by popping id from session
+    session.pop("id")
+
+    return redirect("/?m=Logged+out")
+
+
 if __name__ == "__main__":
     server.run(port=6969, debug=True)

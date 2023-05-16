@@ -54,7 +54,7 @@
                     </fieldset>
                 {% else %}
                     <span>Logged in as {{ user.username }}.</span>
-                    <a href="">Logout</a>
+                    <a href="{{ url_for('handle_log_out') }}">Logout</a>
                 {% endif %}
             </div>
         </section>
