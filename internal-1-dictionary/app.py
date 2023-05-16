@@ -234,7 +234,7 @@ def handle_sign_up():
 
         g.cursor.execute(
             "INSERT INTO Users (Teacher, Username, PasswordHash) VALUES (?,?,?)",
-            [1 if is_teacher else 0, username, str(encrypted_password)],
+            [1 if is_teacher else 0, username, encrypted_password.decode("utf8")],
         )
         g.db.commit()
 
