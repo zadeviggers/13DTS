@@ -3,15 +3,38 @@
 {# A component can be used like this:
 `{{ components.productCard(product)}}`
 in any template that imports this file. #}
+{% macro WordLink(word) %}
+    {# A link to the space for a specific word #}
+    <a href="{{ url_for('specific_word_page', id=word.ID) }}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
+{% endmacro %}
 {% macro WordList(words) %}
     {# A list of words #}
-    <ul>
-        {% for word in words %}
-            <li>
-                <a href="{{ url_for('specific_word_page', id=word.ID) }}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    {% if user != false  and user.teacher %}
+        {# If the user is logged in and is a teacher, show a table with actions #}
+        <table>
+            <thead>
+                <tr>
+                    <th>Word</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for word in words %}
+                    <tr>
+                        <td>{{ WordLink(word) }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_word_action', id=word.ID) }}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        {# Otherwise, just do a regular list #}
+        <ul>
+            {% for word in words %}<li>{{ WordLink(word) }}</li>{% endfor %}
+        </ul>
+    {% endif %}
 {% endmacro %}
 {% macro TextField(name, label, prefix=None, textarea=False, required=True) %}
     {# Versitile text field component for all your input neeeds!#}
@@ -22,7 +45,7 @@ in any template that imports this file. #}
                 {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
             {% endif %}
             {% if textarea %}
-                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %} {{ arg+'="'+kwargs[arg]+'"' }}{% endfor %}  {% if textarea %}></textarea>
+                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %}{{ arg+'="'+kwargs[arg]+'"' }}{% endfor %}  {% if textarea %}></textarea>
             {% else %}
                 />
             </div>

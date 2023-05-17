@@ -1,5 +1,6 @@
-{# Make components available in all templates #}
-{% import 'components.jinja' as components %}
+{# Make components available in all templates,
+making the global variables available by adding 'with context' #}
+{% import 'components.jinja' as components with context %}
 <!DOCTYPE html>
 <html lang="en">
     <head>

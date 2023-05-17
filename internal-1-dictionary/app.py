@@ -203,8 +203,7 @@ def handle_log_in():
         session["id"] = user["ID"]
         return redirect("/")
     except Exception as e:
-        print(f"Failed to create account: {e}")
-        return redirect(f"/?m={str(e)}")
+        return redirect(f"/?m=Error+logging+in+{str(e)}")
 
 
 @server.route("/sign-up", methods=["POST"])
@@ -245,11 +244,10 @@ def handle_sign_up():
 
         return redirect("/?m=Successfully+registered")
     except Exception as e:
-        print(f"Failed to create account: {e}")
-        return redirect(f"/?m={str(e)}")
+        return redirect(f"/?m=Error+creating+account+{str(e)}")
 
 
-@server.route("/logout", methods=["POST", "GET"])
+@server.route("/logout", methods=["DELETE", "GET"])
 def handle_log_out():
     if g.user == False:
         return redirect("/?m=Not+logged+in")
@@ -258,6 +256,19 @@ def handle_log_out():
     session.pop("id")
 
     return redirect("/?m=Logged+out")
+
+
+@server.route("/delete-word/<id>", methods=["DELETE", "GET"])
+@teacher_only
+def delete_word_action(id):
+    try:
+        g.cursor.execute("DELETE FROM Words WHERE ID=?", (id))
+        # g.cursor.commit()
+
+        return redirect("/?m=Deleted+word")
+
+    except Exception as e:
+        return redirect(f"/?m=Error+deleting+word+{str(e)}")
 
 
 if __name__ == "__main__":
