@@ -64,7 +64,7 @@
         {# Messages #}
         <script>
             // Don't show the alert until the page has loaded
-            document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
                 const params = new URLSearchParams(location.search)
                 const message = params.get("m")
                 if (message) {
@@ -78,7 +78,7 @@
                     // Remove message from url without adding to history
                     window.history.replaceState(null, null, newURL);
                 }
-            });
+            }, 0);
         </script>
     </body>
 </html>
