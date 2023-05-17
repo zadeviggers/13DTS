@@ -1,6 +1,18 @@
 {% extends "base.jinja" %}
-{% set title="Home" %}
+{% set title = "Home" %}
 {% block main %}
     <h1>Home</h1>
-    {{ components.WordList(words)}}
+    <section>
+        <h2>Search:</h2>
+        <p>
+            Search for both the English and Māori is avaible by using the <kbd>CTRL + F</kbd> or <kbd>CMD + F</kbd> keyboard shortcuts.
+        </p>
+        <p>When you find the word you're looking for, click the highlighted link to go to it's page.</p>
+        <p>
+            If you're on mobile, the search function is also available:
+            On iOS, type your search term in the address bar, then scroll down and click 'search in page'.
+            On Android, you can open the menu (usually 3 dots), and tap 'find in page', and then search as usual.
+        </p>
+    </section>
+    {{ components.WordList(words) }}
 {% endblock main %}
