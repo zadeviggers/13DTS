@@ -177,7 +177,7 @@ def specific_word_page(id):
 @server.route("/login", methods=["POST"])
 def handle_log_in():
     if g.user:
-        return redirect("/?m=Already%20logged%20in")
+        return redirect("/?m=Already+logged+in")
 
     # Try to log the user in, and return True if it works,
     # or and error message if it doesn't.
