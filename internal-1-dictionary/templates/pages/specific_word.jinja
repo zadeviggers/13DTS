@@ -1,9 +1,10 @@
 {% extends "base.jinja" %}
-{% set title=word.MaoriSpelling + " - " + word.EnglishSpelling %}
+{% set title = word.MaoriSpelling + " - " + word.EnglishSpelling %}
 {% block main %}
     <h1>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}:</h1>
     <p>{{ word.EnglishDefinition }}</p>
+    <a href="{{ url_for('delete_word_action', id=word.ID) }}">Delete word</a>
     <p>
-        In category <a href="{{ url_for('specific_category_page', id=category.ID)}}">{{ category.EnglishName }}</a>
+        Category <a href="{{ url_for('specific_category_page', id=category.ID) }}">{{ category.EnglishName }}</a>
     </p>
 {% endblock main %}
