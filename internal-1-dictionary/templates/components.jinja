@@ -3,6 +3,9 @@
 {# A component can be used like this:
 `{{ components.productCard(product)}}`
 in any template that imports this file. #}
+{# When importing, make sure to add 'with context'
+to the end of the import line, to expose the
+global variables like 'user'. #}
 {% macro WordLink(word) %}
     {# A link to the space for a specific word #}
     <a href="{{ url_for('specific_word_page', id=word.ID) }}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
