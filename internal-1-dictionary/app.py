@@ -2,7 +2,6 @@ from functools import wraps
 from flask import Flask, abort, render_template, redirect, request, session, g
 from flask_bcrypt import Bcrypt
 import sqlite3
-import os
 
 # Set up flask and bcrypt
 server = Flask(__name__)
