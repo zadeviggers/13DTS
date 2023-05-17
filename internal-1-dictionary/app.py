@@ -230,7 +230,7 @@ def handle_sign_up():
         res = g.cursor.fetchall()
 
         if len(res) > 0:
-            return redirect("/?m=Username already taken")
+            return redirect("/?m=Username+already+taken")
 
         g.cursor.execute(
             "INSERT INTO Users (Teacher, Username, PasswordHash) VALUES (?,?,?)",
