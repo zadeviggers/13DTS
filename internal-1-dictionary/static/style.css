@@ -142,7 +142,7 @@ footer {
 
 /* Admin edit sections at the top of pages */
 .admin-edit-section {
-	width: fit-content(stretch);
+	width: fit-content;
 }
 
 /* Form styles */
