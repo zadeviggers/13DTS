@@ -1,6 +1,23 @@
 {% extends "base.jinja" %}
-{% set title=category.EnglishName %}
+{% set title = category.EnglishName %}
 {% block main %}
-    <h1>Words in {{ category.EnglishName }}:</h1>
-    {{ components.WordList(words)}}
+    <h1>{{ category.EnglishName }} category</h1>
+    {% if user and user.teacher %}
+        <section class="admin-edit-section">
+            <fieldset form="add-word">
+                <legend>Add new word</legend>
+                <form action="{{ url_for('create_word_action') }}"
+                      id="add-word"
+                      method="POST">
+                    {{ components.TextField("english-spelling", "English spelling") }}
+                    {{ components.TextField("maori-spelling", "Māori spelling") }}
+                    {{ components.TextField("english-definition", "Defintion (English)", textarea=true) }}
+                    {{ components.TextField("year-level", "Year level first encounted", type="number") }}
+                    <input name="category-id" type="hidden" value="{{ category.ID }}" />
+                    <button type="submit">Create word</button>
+                </form>
+            </fieldset>
+        </section>
+    {% endif %}
+    {{ components.WordList(words) }}
 {% endblock main %}

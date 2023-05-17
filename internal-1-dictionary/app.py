@@ -2,12 +2,19 @@ from functools import wraps
 from flask import Flask, abort, render_template, redirect, request, session, g
 from flask_bcrypt import Bcrypt
 import sqlite3
+from time import time
+import math
 
 # Set up flask and bcrypt
 server = Flask(__name__)
 bcrypt = Bcrypt(server)
 
 server.secret_key = "top-secrete"
+
+
+def time_in_ms():
+    # Used to get the current time as an integer of milliseconds
+    return math.floor(time() * 1000)
 
 
 def db_dict_factory(cursor, row):
@@ -262,13 +269,51 @@ def handle_log_out():
 @teacher_only
 def delete_word_action(id):
     try:
-        g.cursor.execute("DELETE FROM Words WHERE ID=?", (id))
-        # g.cursor.commit()
+        g.cursor.execute("DELETE FROM Words WHERE ID=?", [id])
+        g.db.commit()
 
         return redirect("/?m=Deleted+word")
 
     except Exception as e:
         return redirect(f"/?m=Error+deleting+word+{str(e)}")
+
+
+@server.route("/create-word", methods=["POST"])
+@teacher_only
+def create_word_action():
+    # Get the word's parameters the form
+    EnglishSpelling = request.form["english-spelling"]
+    MaoriSpelling = request.form["maori-spelling"]
+    EnglishDefinition = request.form["english-definition"]
+    YearLevelFirstEncountered = request.form["year-level"]
+    ImageID = None  # request.form["image-id"]
+    CategoryID = request.form["category-id"]
+
+    try:
+        g.cursor.execute(
+            "INSERT INTO Words (MaoriSpelling, EnglishSpelling, EnglishDefinition, CategoryID, YearLevelFirstEncountered, ImageID, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?,?)",
+            [
+                MaoriSpelling,
+                EnglishSpelling,
+                EnglishDefinition,
+                CategoryID,
+                YearLevelFirstEncountered,
+                ImageID,
+                g.user["id"],
+                time_in_ms(),
+            ],
+        )
+        g.db.commit()
+
+        # Get the ID of the created row
+        # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
+        g.cursor.execute("SELECT last_insert_rowid()")
+        id = g.cursor.fetchone()["last_insert_rowid()"]
+
+        return redirect(f"/words/{id}")
+
+    except Exception as e:
+        return redirect(f"/?m=Error+creating+word+{str(e)}")
 
 
 if __name__ == "__main__":

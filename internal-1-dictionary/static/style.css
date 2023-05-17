@@ -140,6 +140,11 @@ footer {
 	padding-right: var(--footer-x-padding);
 }
 
+/* Admin edit sections at the top of pages */
+.admin-edit-section {
+	width: fit-content(stretch);
+}
+
 /* Form styles */
 fieldset {
 	border: 1px solid black;
