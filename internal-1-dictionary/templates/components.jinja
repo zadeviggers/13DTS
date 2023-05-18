@@ -6,9 +6,31 @@ in any template that imports this file. #}
 {# When importing, make sure to add 'with context'
 to the end of the import line, to expose the
 global variables like 'user'. #}
+{% macro WordImage(word, small=False) %}
+    {% set multiplier = 80 %}
+    {% if small %}
+        {% set multiplier = 20 %}
+    {% endif %}
+    {% if word.ImageFilename != none %}
+        <img class="word-image"
+             src="{{ url_for('static', filename='images/'+word.ImageFilename) }}"
+             alt="An image of {{ word.EnglishSpelling }}"
+             title="An image of {{ word.EnglishSpelling }}"
+             width="{{ 4*multiplier }}"
+             height="{{ 3*multiplier }}" />
+    {% else %}
+        <img class="word-image"
+             src="{{ url_for('static', filename='images/noimage.png') }}"
+             alt="A placeholder image"
+             title="A placeholder image"
+             width="{{ 4*multiplier }}"
+             height="{{ 3*multiplier }}" />
+    {% endif %}
+{% endmacro %}
 {% macro WordLink(word) %}
     {# A link to the space for a specific word #}
-    <a href="{{ url_for('word_page', id=word.ID) }}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
+    <a href="{{ url_for('word_page', id=word.ID) }}">
+    {{ WordImage(word, small=True) }} <span>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</span></a>
 {% endmacro %}
 {% macro WordList(words) %}
     {# A list of words #}

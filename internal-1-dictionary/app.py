@@ -288,19 +288,21 @@ def create_word_action():
     MaoriSpelling = request.form["maori-spelling"]
     EnglishDefinition = request.form["english-definition"]
     YearLevelFirstEncountered = request.form["year-level"]
-    ImageID = None  # request.form["image-id"]
+    ImageFilename = (
+        request.form["image-filename"] if "image-filename" in request.form else None
+    )
     CategoryID = request.form["category-id"]
 
     try:
         g.cursor.execute(
-            "INSERT INTO Words (MaoriSpelling, EnglishSpelling, EnglishDefinition, CategoryID, YearLevelFirstEncountered, ImageID, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?,?)",
+            "INSERT INTO Words (MaoriSpelling, EnglishSpelling, EnglishDefinition, CategoryID, YearLevelFirstEncountered, ImageFilename, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?,?)",
             [
                 MaoriSpelling,
                 EnglishSpelling,
                 EnglishDefinition,
                 CategoryID,
                 YearLevelFirstEncountered,
-                ImageID,
+                ImageFilename,
                 g.user["id"],
                 time_in_ms(),
             ],
@@ -330,6 +332,7 @@ def delete_category_action(id):
                 f"{url_for('category_page', id=id)}?m=You+need+to+delete+all+words+in+the+category+first"
             )
 
+        # Delete the category
         g.cursor.execute("DELETE FROM Categories WHERE ID=?", [id])
         g.db.commit()
 

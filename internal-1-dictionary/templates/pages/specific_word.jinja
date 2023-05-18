@@ -2,6 +2,7 @@
 {% set title = word.MaoriSpelling + " - " + word.EnglishSpelling %}
 {% block main %}
     <h1>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}:</h1>
+    {{ components.WordImage(word) }}
     <p>{{ word.EnglishDefinition }}</p>
     <a data-confirm href="{{ url_for('delete_word_action', id=word.ID) }}">Delete word</a>
     <p>

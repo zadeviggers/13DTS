@@ -100,7 +100,9 @@
             }, 0);
         </script>
         <script>
-        // Get all elements we want to add confirmation dialogs to
+            /* The contents of this <script> tag are released into the public domain */
+
+            // Get all elements we want to add confirmation dialogs to
             const confrimEls = document.querySelectorAll("[data-confirm]")
             // Add the click listener to them
             confrimEls.forEach(el => el.addEventListener("click", confrimClick))
@@ -114,6 +116,6 @@
                     ev.preventDefault()
                 }
             }
-        </script>
-    </body>
+</script>
+</body>
 </html>
