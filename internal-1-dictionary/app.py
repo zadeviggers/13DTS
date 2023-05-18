@@ -269,10 +269,12 @@ def handle_log_out():
 @teacher_only
 def delete_word_action(id):
     try:
+        g.cursor.execute("SELECT CategoryID FROM Words WHERE ID=?", [id])
+        category_id = g.cursor.fetchone()["CategoryID"]
         g.cursor.execute("DELETE FROM Words WHERE ID=?", [id])
         g.db.commit()
 
-        return redirect(f"{url_for('home_page')}?m=Deleted+word")
+        return redirect(f"{url_for('category_page', id=category_id)}?m=Deleted+word")
 
     except Exception as e:
         return redirect(f"{url_for('home_page')}?m=Error+deleting+word+{str(e)}")
