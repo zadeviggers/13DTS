@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 import sqlite3
 from time import time
 import math
+from datetime import datetime
 
 # Set up flask and bcrypt
 server = Flask(__name__)
@@ -176,8 +177,12 @@ def word_page(id):
     g.cursor.execute(category_query, [word["CategoryID"]])
     category = g.cursor.fetchone()
 
+    created_at = datetime.fromtimestamp(word["CreatedAt"] / 1000)
+
     # Render the pages
-    return render_template("pages/specific_word.jinja", category=category, word=word)
+    return render_template(
+        "pages/specific_word.jinja", category=category, word=word, created_at=created_at
+    )
 
 
 @server.route("/login", methods=["POST"])

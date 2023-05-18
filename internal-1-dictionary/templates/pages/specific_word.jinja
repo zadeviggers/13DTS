@@ -3,11 +3,12 @@
 {% block main %}
     <h1>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}:</h1>
     {{ components.WordImage(word) }}
-    <p>{{ word.EnglishDefinition }}</p>
+    <p>Defintion: {{ word.EnglishDefinition }}</p>
     {% if user and user.teacher %}
         <a data-confirm href="{{ url_for('delete_word_action', id=word.ID) }}">Delete word</a>
     {% endif %}
     <p>
-        Category <a href="{{ url_for('category_page', id=category.ID) }}">{{ category.EnglishName }}</a>
+        Category: <a href="{{ url_for('category_page', id=category.ID) }}">{{ category.EnglishName }}</a>
     </p>
+    <p>Created on: {{ created_at.strftime('%d %B %Y, at %I:%M%p') }}</p>
 {% endblock main %}
