@@ -8,7 +8,7 @@ to the end of the import line, to expose the
 global variables like 'user'. #}
 {% macro WordLink(word) %}
     {# A link to the space for a specific word #}
-    <a href="{{ url_for('specific_word_page', id=word.ID) }}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
+    <a href="{{ url_for('word_page', id=word.ID) }}">{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</a>
 {% endmacro %}
 {% macro WordList(words) %}
     {# A list of words #}

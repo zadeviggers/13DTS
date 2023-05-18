@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, abort, render_template, redirect, request, session, g
+from flask import Flask, abort, render_template, redirect, request, session, g, url_for
 from flask_bcrypt import Bcrypt
 import sqlite3
 from time import time
@@ -55,9 +55,9 @@ def teacher_only(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not g.user:
-            return redirect(f"/auth?m=You+are+not+logged+in")
+            return redirect(f"{url_for('home_page')}?m=You+are+not+logged+in")
         if g.user["teacher"] != True:
-            return redirect("/?m=You+are+not+a+teacher")
+            return redirect(f"{url_for('home_page')}?m=You+are+not+a+teacher")
         return func(*args, **kwargs)
 
     return wrapper
@@ -134,7 +134,7 @@ def home_page():
 
 
 @server.route("/categories/<id>", methods=["GET"])
-def specific_category_page(id):
+def category_page(id):
     # Page for just showing words in one category
 
     # No need to re-query the database, when we already have a list of all the categories
@@ -159,7 +159,7 @@ def specific_category_page(id):
 
 
 @server.route("/words/<id>", methods=["GET"])
-def specific_word_page(id):
+def word_page(id):
     # Page for just showing words in one category
 
     # Select the word from the database using the ID
@@ -183,7 +183,7 @@ def specific_word_page(id):
 @server.route("/login", methods=["POST"])
 def handle_log_in():
     if g.user:
-        return redirect("/?m=Already+logged+in")
+        return redirect(f"{url_for('home_page')}?m=Already+logged+in")
 
     # Try to log the user in, and return True if it works,
     # or and error message if it doesn't.
@@ -198,25 +198,25 @@ def handle_log_in():
         res = g.cursor.fetchall()
 
         if len(res) == 0:
-            return redirect("/?m=User+not+found")
+            return redirect(f"{url_for('home_page')}?m=User+not+found")
 
         user = res[0]
 
         matches = bcrypt.check_password_hash(user["PasswordHash"], password)
 
         if not matches:
-            return redirect("/?m=Password+is+wrong")
+            return redirect(f"{url_for('home_page')}?m=Password+is+wrong")
 
         session["id"] = user["ID"]
-        return redirect("/")
+        return redirect(url_for("home_page"))
     except Exception as e:
-        return redirect(f"/?m=Error+logging+in+{str(e)}")
+        return redirect(f"{url_for('home_page')}?m=Error+logging+in+{str(e)}")
 
 
 @server.route("/sign-up", methods=["POST"])
 def handle_sign_up():
     if g.user:
-        return redirect("/?m=Already+logged+in")
+        return redirect(f"{url_for('home_page')}?m=Already+logged+in")
 
     # Try to create and account log the user in.
     # Get the username and password form the form
@@ -235,7 +235,7 @@ def handle_sign_up():
         res = g.cursor.fetchall()
 
         if len(res) > 0:
-            return redirect("/?m=Username+already+taken")
+            return redirect(f"{url_for('home_page')}?m=Username+already+taken")
 
         g.cursor.execute(
             "INSERT INTO Users (Teacher, Username, PasswordHash) VALUES (?,?,?)",
@@ -249,20 +249,20 @@ def handle_sign_up():
         id = g.cursor.fetchone()["last_insert_rowid()"]
         session["id"] = id
 
-        return redirect("/?m=Successfully+registered")
+        return redirect(f"{url_for('home_page')}?m=Successfully+registered")
     except Exception as e:
-        return redirect(f"/?m=Error+creating+account+{str(e)}")
+        return redirect(f"{url_for('home_page')}?m=Error+creating+account+{str(e)}")
 
 
 @server.route("/logout", methods=["DELETE", "GET"])
 def handle_log_out():
     if g.user == False:
-        return redirect("/?m=Not+logged+in")
+        return redirect(f"{url_for('home_page')}?m=Not+logged+in")
 
     # Log user out by popping id from session
     session.pop("id")
 
-    return redirect("/?m=Logged+out")
+    return redirect(f"{url_for('home_page')}?m=Logged+out")
 
 
 @server.route("/delete-word/<id>", methods=["DELETE", "GET"])
@@ -272,10 +272,10 @@ def delete_word_action(id):
         g.cursor.execute("DELETE FROM Words WHERE ID=?", [id])
         g.db.commit()
 
-        return redirect("/?m=Deleted+word")
+        return redirect(f"{url_for('home_page')}?m=Deleted+word")
 
     except Exception as e:
-        return redirect(f"/?m=Error+deleting+word+{str(e)}")
+        return redirect(f"{url_for('home_page')}?m=Error+deleting+word+{str(e)}")
 
 
 @server.route("/create-word", methods=["POST"])
@@ -310,10 +310,10 @@ def create_word_action():
         g.cursor.execute("SELECT last_insert_rowid()")
         id = g.cursor.fetchone()["last_insert_rowid()"]
 
-        return redirect(f"/words/{id}")
+        return redirect(url_for("word_page", id=id))
 
     except Exception as e:
-        return redirect(f"/?m=Error+creating+word+{str(e)}")
+        return redirect(f"{url_for('home_page')}?m=Error+creating+word+{str(e)}")
 
 
 @server.route("/delete-category/<id>", methods=["DELETE", "GET"])
@@ -325,16 +325,16 @@ def delete_category_action(id):
         words = g.cursor.fetchall()
         if len(words) > 0:
             return redirect(
-                f"/category/{id}?m=You+need+to+delete+all+words+in+the+category+first"
+                f"{url_for('category_page', id=id)}?m=You+need+to+delete+all+words+in+the+category+first"
             )
 
         g.cursor.execute("DELETE FROM Categories WHERE ID=?", [id])
-        # g.db.commit()
+        g.db.commit()
 
-        return redirect("/?m=Deleted+category")
+        return redirect(f"{url_for('home_page')}?m=Deleted+category")
 
     except Exception as e:
-        return redirect(f"/?m=Error+deleting+category+{str(e)}")
+        return redirect(f"{url_for('home_page')}?m=Error+deleting+category+{str(e)}")
 
 
 @server.route("/create-category", methods=["POST"])
@@ -355,10 +355,10 @@ def create_category_action():
         g.cursor.execute("SELECT last_insert_rowid()")
         id = g.cursor.fetchone()["last_insert_rowid()"]
 
-        return redirect(f"/categories/{id}")
+        return redirect(url_for("category_page", id=id))
 
     except Exception as e:
-        return redirect(f"/?m=Error+creating+word+{str(e)}")
+        return redirect(f"{url_for('home_page')}?m=Error+creating+word+{str(e)}")
 
 
 if __name__ == "__main__":

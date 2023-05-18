@@ -17,7 +17,7 @@
                 <ul>
                     {% for category in categories %}
                         <li>
-                            <a href="{{ url_for('specific_category_page', id=category.ID) }}">{{ category.EnglishName }}</a>
+                            <a href="{{ url_for('category_page', id=category.ID) }}">{{ category.EnglishName }}</a>
                         </li>
                     {% endfor %}
                 </ul>
