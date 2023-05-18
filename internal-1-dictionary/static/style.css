@@ -145,6 +145,12 @@ footer {
 	width: fit-content;
 }
 
+/* Images */
+img {
+	/* Stop images stretching & squishing when the width and height of the element don't match the actual image */
+	object-fit: cover;
+}
+
 /* Form styles */
 fieldset {
 	border: 1px solid black;
