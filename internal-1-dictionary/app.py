@@ -201,22 +201,25 @@ def handle_log_in():
     password = request.form["log-in-password"]
 
     try:
+        # Get the user data that matches this username
         g.cursor.execute(
             "SELECT Username, Teacher, PasswordHash, ID FROM Users WHERE Username=?",
             [username],
         )
         res = g.cursor.fetchall()
 
+        # Error if user not found
         if len(res) == 0:
             return redirect(f"{url_for('home_page')}?m=User+not+found")
 
         user = res[0]
 
+        # Check password
         matches = bcrypt.check_password_hash(user["PasswordHash"], password)
-
         if not matches:
             return redirect(f"{url_for('home_page')}?m=Password+is+wrong")
 
+        # Log the user in
         session["id"] = user["ID"]
         return redirect(url_for("home_page"))
     except Exception as e:
@@ -235,24 +238,29 @@ def handle_sign_up():
     # Checkboxes only send their value if they're checked
     is_teacher = "is-teacher" in request.form
 
+    # Make sure they provided a username & password
     if not username or not password:
         return False
 
+    # Encrypt password
     encrypted_password = bcrypt.generate_password_hash(password)
 
     try:
+        # Check that the username hasn't been used already
         g.cursor.execute("SELECT Username FROM Users WHERE Username=?", [username])
         res = g.cursor.fetchall()
 
         if len(res) > 0:
             return redirect(f"{url_for('home_page')}?m=Username+already+taken")
 
+        # Create the user
         g.cursor.execute(
             "INSERT INTO Users (Teacher, Username, PasswordHash) VALUES (?,?,?)",
             [1 if is_teacher else 0, username, encrypted_password.decode("utf8")],
         )
         g.db.commit()
 
+        # Get the user ID
         id = get_last_inserted_row_id()
         session["id"] = id
 
@@ -276,11 +284,15 @@ def handle_log_out():
 @teacher_only
 def delete_word_action(id):
     try:
+        # Get the ID of the category it's in to redirect to before deleting it
         g.cursor.execute("SELECT CategoryID FROM Words WHERE ID=?", [id])
         category_id = g.cursor.fetchone()["CategoryID"]
+
+        # Delete the word
         g.cursor.execute("DELETE FROM Words WHERE ID=?", [id])
         g.db.commit()
 
+        # Redirect to the page for the category the word was in
         return redirect(f"{url_for('category_page', id=category_id)}?m=Deleted+word")
 
     except Exception as e:
@@ -301,6 +313,7 @@ def create_word_action():
     CategoryID = request.form["category-id"]
 
     try:
+        # Create the word
         g.cursor.execute(
             "INSERT INTO Words (MaoriSpelling, EnglishSpelling, EnglishDefinition, CategoryID, YearLevelFirstEncountered, ImageFilename, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?,?)",
             [
@@ -316,8 +329,8 @@ def create_word_action():
         )
         g.db.commit()
 
+        # Redirect to the page for the created word
         id = get_last_inserted_row_id()
-
         return redirect(url_for("word_page", id=id))
 
     except Exception as e:
@@ -340,6 +353,7 @@ def delete_category_action(id):
         g.cursor.execute("DELETE FROM Categories WHERE ID=?", [id])
         g.db.commit()
 
+        # Redirect to the home page
         return redirect(f"{url_for('home_page')}?m=Deleted+category")
 
     except Exception as e:
@@ -353,14 +367,15 @@ def create_category_action():
     EnglishName = request.form["english-name"]
 
     try:
+        # Create the category
         g.cursor.execute(
             "INSERT INTO Categories (EnglishName) VALUES (?)",
             [EnglishName],
         )
         g.db.commit()
 
+        # Redirect to the newly created category page
         id = get_last_inserted_row_id()
-
         return redirect(url_for("category_page", id=id))
 
     except Exception as e:
@@ -368,4 +383,6 @@ def create_category_action():
 
 
 if __name__ == "__main__":
+    # Start the server
+    # debug=True makes it so that the server automatically restarts when you save files
     server.run(port=6969, debug=True)

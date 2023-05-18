@@ -82,6 +82,8 @@
         </footer>
         {# Messages #}
         <script>
+            /* Custom script to show any messages in the url bar */
+
             // Don't show the alert until the page has loaded
             setTimeout(() => {
                 const params = new URLSearchParams(location.search)
@@ -100,7 +102,8 @@
             }, 0);
         </script>
         <script>
-            /* The contents of this <script> tag are released into the public domain */
+            /* Custom script to select all elements with the `data-confirm` attribute,
+                and add a confirm popup when they're clicked. */
 
             // Get all elements we want to add confirmation dialogs to
             const confrimEls = document.querySelectorAll("[data-confirm]")
@@ -116,6 +119,6 @@
                     ev.preventDefault()
                 }
             }
-</script>
-</body>
+        </script>
+    </body>
 </html>

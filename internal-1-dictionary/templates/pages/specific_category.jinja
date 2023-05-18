@@ -3,6 +3,7 @@
 {% block main %}
     <h1>{{ category.EnglishName }} category</h1>
     {% if user and user.teacher %}
+        {# data-confirm shows a confirm popup using a custom script tag #}
         <a data-confirm
            href="{{ url_for('delete_category_action', id=category.ID) }}">Delete category</a>
         <section class="admin-edit-section">
