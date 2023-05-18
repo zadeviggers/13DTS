@@ -66,7 +66,13 @@
                         </form>
                     </fieldset>
                 {% else %}
-                    <span>Logged in as {{ user.username }}.</span>
+                    <span>Logged in as {{ user.username }} (
+                        {% if user.teacher %}
+                            teacher
+                        {% else %}
+                            student
+                        {% endif %}
+                    ).</span>
                     <a href="{{ url_for('handle_log_out') }}">Logout</a>
                 {% endif %}
             </div>
