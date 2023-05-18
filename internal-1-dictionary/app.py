@@ -316,5 +316,50 @@ def create_word_action():
         return redirect(f"/?m=Error+creating+word+{str(e)}")
 
 
+@server.route("/delete-category/<id>", methods=["DELETE", "GET"])
+@teacher_only
+def delete_category_action(id):
+    try:
+        # Don't let the category be deleted if it has words in it
+        g.cursor.execute("SELECT ID from Words WHERE CategoryID=?", [id])
+        words = g.cursor.fetchall()
+        if len(words) > 0:
+            return redirect(
+                f"/category/{id}?m=You+need+to+delete+all+words+in+the+category+first"
+            )
+
+        g.cursor.execute("DELETE FROM Categories WHERE ID=?", [id])
+        # g.db.commit()
+
+        return redirect("/?m=Deleted+category")
+
+    except Exception as e:
+        return redirect(f"/?m=Error+deleting+category+{str(e)}")
+
+
+@server.route("/create-category", methods=["POST"])
+@teacher_only
+def create_category_action():
+    # Get the word's parameters the form
+    EnglishName = request.form["english-name"]
+
+    try:
+        g.cursor.execute(
+            "INSERT INTO Categories (EnglishName) VALUES (?)",
+            [EnglishName],
+        )
+        g.db.commit()
+
+        # Get the ID of the created row
+        # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
+        g.cursor.execute("SELECT last_insert_rowid()")
+        id = g.cursor.fetchone()["last_insert_rowid()"]
+
+        return redirect(f"/categories/{id}")
+
+    except Exception as e:
+        return redirect(f"/?m=Error+creating+word+{str(e)}")
+
+
 if __name__ == "__main__":
     server.run(port=6969, debug=True)

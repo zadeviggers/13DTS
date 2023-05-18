@@ -26,7 +26,7 @@ global variables like 'user'. #}
                     <tr>
                         <td>{{ WordLink(word) }}</td>
                         <td>
-                            <a href="{{ url_for('delete_word_action', id=word.ID) }}">Delete</a>
+                            <a data-confirm href="{{ url_for('delete_word_action', id=word.ID) }}">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
