@@ -1,16 +1,9 @@
 CREATE TABLE
 	"Users" (
 		"ID" INTEGER NOT NULL UNIQUE,
-		"Name" TEXT NOT NULL,
+		"Username" TEXT NOT NULL,
+		"PasswordHash" TEXT NOT NULL,
 		"Teacher" INTEGER,
-		PRIMARY KEY ("ID" AUTOINCREMENT)
-	) STRICT;
-
-CREATE TABLE
-	"Images" (
-		"ID" INTEGER NOT NULL UNIQUE,
-		"Description" TEXT NOT NULL,
-		"AssertSlug" TEXT NOT NULL,
 		PRIMARY KEY ("ID" AUTOINCREMENT)
 	) STRICT;
 
@@ -28,7 +21,7 @@ CREATE TABLE
 		"EnglishSpelling" TEXT NOT NULL,
 		"EnglishDefinition" TEXT NOT NULL,
 		"YearLevelFirstEncountered" INTEGER NOT NULL,
-		"ImageID" INTEGER,
+		"ImageFilename" TEXT,
 		"CreatedBy" INTEGER NOT NULL,
 		"CreatedAt" INTEGER NOT NULL,
 		"LastModifiedBy" INTEGER,
