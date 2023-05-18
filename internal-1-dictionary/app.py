@@ -18,6 +18,14 @@ def time_in_ms():
     return math.floor(time() * 1000)
 
 
+def get_last_inserted_row_id() -> int:
+    # Get the ID of the most recently created row
+    # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
+    g.cursor.execute("SELECT last_insert_rowid()")
+    id = g.cursor.fetchone()["last_insert_rowid()"]
+    return id
+
+
 def db_dict_factory(cursor, row):
     # Used to return database query results as dictionaries.
     # From the docs: https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection.row_factory
@@ -126,8 +134,7 @@ def home_page():
     # The main homepage, which shows all the words
 
     # Get all the words
-    words_query = "SELECT * FROM Words"
-    g.cursor.execute(words_query)
+    g.cursor.execute("SELECT * FROM Words")
     words = g.cursor.fetchall()
 
     # Render the page
@@ -149,8 +156,7 @@ def category_page(id):
         abort(404)
 
     # Get the words in that category
-    category_words_query = "SELECT * FROM Words WHERE CategoryID = ?"
-    g.cursor.execute(category_words_query, [category["ID"]])
+    g.cursor.execute("SELECT * FROM Words WHERE CategoryID = ?", [category["ID"]])
     category_words = g.cursor.fetchall()
 
     # Render the page
@@ -173,8 +179,7 @@ def word_page(id):
         abort(404)
 
     # Get the category for that word
-    category_query = "SELECT * FROM Categories WHERE ID = ?"
-    g.cursor.execute(category_query, [word["CategoryID"]])
+    g.cursor.execute("SELECT * FROM Categories WHERE ID = ?", [word["CategoryID"]])
     category = g.cursor.fetchone()
 
     created_at = datetime.fromtimestamp(word["CreatedAt"] / 1000)
@@ -248,10 +253,7 @@ def handle_sign_up():
         )
         g.db.commit()
 
-        # Get the ID of the created row
-        # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
-        g.cursor.execute("SELECT last_insert_rowid()")
-        id = g.cursor.fetchone()["last_insert_rowid()"]
+        id = get_last_inserted_row_id()
         session["id"] = id
 
         return redirect(f"{url_for('home_page')}?m=Successfully+registered")
@@ -314,10 +316,7 @@ def create_word_action():
         )
         g.db.commit()
 
-        # Get the ID of the created row
-        # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
-        g.cursor.execute("SELECT last_insert_rowid()")
-        id = g.cursor.fetchone()["last_insert_rowid()"]
+        id = get_last_inserted_row_id()
 
         return redirect(url_for("word_page", id=id))
 
@@ -360,10 +359,7 @@ def create_category_action():
         )
         g.db.commit()
 
-        # Get the ID of the created row
-        # This is a special SQLite function: https://www.sqlite.org/lang_corefunc.html#last_insert_rowid
-        g.cursor.execute("SELECT last_insert_rowid()")
-        id = g.cursor.fetchone()["last_insert_rowid()"]
+        id = get_last_inserted_row_id()
 
         return redirect(url_for("category_page", id=id))
 
