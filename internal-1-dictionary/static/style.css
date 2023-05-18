@@ -12,8 +12,9 @@
 	/* Main layout */
 	--navbar-height: 40px;
 	--footer-height: 40px;
+
 	/* Only used in desktop layout */
-	--categories-width: 250px;
+	--categories-width: 200px;
 	--auth-width: 300px;
 
 	/* Footer */
@@ -22,6 +23,9 @@
 
 	/* Categories list */
 	--categories-padding: 10px;
+
+	/* Main content */
+	--main-content-left-padding: 50px;
 
 	/* Auth panel */
 	--auth-padding: 10px;
@@ -67,6 +71,11 @@ body {
 #categories-container {
 	/* Page layout */
 	grid-area: categories;
+
+	/* Element style */
+	border-right: 1px solid black;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
 }
 #categories {
 	padding: var(--categories-padding);
@@ -125,6 +134,9 @@ header {
 main {
 	/* Page layout */
 	grid-area: main;
+
+	/* Element layout */
+	padding-left: var(--main-content-left-padding);
 }
 
 footer {
