@@ -21,17 +21,19 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <section class="admin-edit-section">
-                    <fieldset form="add-categoru">
-                        <legend>Create category</legend>
-                        <form action="{{ url_for('create_category_action') }}"
-                              id="add-category"
-                              method="POST">
-                            {{ components.TextField("english-name", "Name (English)") }}
-                            <button type="submit">Create category</button>
-                        </form>
-                    </fieldset>
-                </section>
+                {% if user and user.teacher %}
+                    <section class="admin-edit-section">
+                        <fieldset form="add-categoru">
+                            <legend>Create category</legend>
+                            <form action="{{ url_for('create_category_action') }}"
+                                  id="add-category"
+                                  method="POST">
+                                {{ components.TextField("english-name", "Name (English)") }}
+                                <button type="submit">Create category</button>
+                            </form>
+                        </fieldset>
+                    </section>
+                {% endif %}
             </nav>
         </section>
         <main id="content">
