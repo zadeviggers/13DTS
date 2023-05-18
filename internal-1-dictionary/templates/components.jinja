@@ -34,7 +34,7 @@ global variables like 'user'. #}
 {% endmacro %}
 {% macro WordList(words) %}
     {# A list of words #}
-    {% if user != false  and user.teacher %}
+    {% if user != false and user.teacher %}
         {# If the user is logged in and is a teacher, show a table with actions #}
         <table>
             <thead>
