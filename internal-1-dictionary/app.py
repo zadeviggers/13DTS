@@ -182,11 +182,22 @@ def word_page(id):
     g.cursor.execute("SELECT * FROM Categories WHERE ID = ?", [word["CategoryID"]])
     category = g.cursor.fetchone()
 
+    # Get the creation date
     created_at = datetime.fromtimestamp(word["CreatedAt"] / 1000)
+
+    # Get the user that created the word
+    g.cursor.execute(
+        "SELECT Username FROM Users WHERE ID = ?", (str(word["CreatedBy"]))
+    )
+    created_by = g.cursor.fetchone()["Username"]
 
     # Render the pages
     return render_template(
-        "pages/specific_word.jinja", category=category, word=word, created_at=created_at
+        "pages/specific_word.jinja",
+        category=category,
+        word=word,
+        created_at=created_at,
+        created_by=created_by,
     )
 
 
