@@ -318,9 +318,10 @@ def create_word_action():
     MaoriSpelling = request.form["maori-spelling"]
     EnglishDefinition = request.form["english-definition"]
     YearLevelFirstEncountered = request.form["year-level"]
-    ImageFilename = (
-        request.form["image-filename"] if "image-filename" in request.form else None
-    )
+    ImageFilename = request.form["image-filename"]
+    # Handle empty strings
+    if len(ImageFilename) == 0:
+        ImageFilename = None
     CategoryID = request.form["category-id"]
 
     try:
