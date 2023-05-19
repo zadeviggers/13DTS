@@ -11,71 +11,61 @@ global variables like 'user'. #}
     {% if small %}
         {% set multiplier = 20 %}
     {% endif %}
-    {% if word.ImageFilename != none %}
-        <img class="word-image"
-             src="{{ url_for('static', filename='images/'+word.ImageFilename) }}"
-             alt="An image of {{ word.EnglishSpelling }}"
-             title="An image of {{ word.EnglishSpelling }}"
-             width="{{ 4*multiplier }}"
-             height="{{ 3*multiplier }}"
-             {% if lazy %}loading="lazy"{% endif %} />
-    {% else %}
-        <img class="word-image"
-             src="{{ url_for('static', filename='images/noimage.png') }}"
-             alt="A placeholder image"
-             title="A placeholder image"
-             width="{{ 4*multiplier }}"
-             height="{{ 3*multiplier }}"
-             {% if lazy %}loading="lazy"{% endif %} />
-    {% endif %}
-{% endmacro %}
-{% macro WordLink(word) %}
-    {# A link to the space for a specific word #}
-    <a href="{{ url_for('word_page', id=word.ID) }}">
-    {{ WordImage(word, small=True) }} <span>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</span></a>
-{% endmacro %}
-{% macro WordList(words) %}
-    {# A list of words #}
-    {% if user != false and user.teacher %}
-        {# If the user is logged in and is a teacher, show a table with actions #}
-        <table>
-            <thead>
-                <tr>
-                    <th>Word</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for word in words %}
+    <img class="word-image"
+        {# This is the formatter's fault - I tried to make it split these onto
+        muleiple lines but I couldn't do it. #}
+        {% if word.ImageFilename != none %} src="{{ url_for('static', filename='images/'+word.ImageFilename) }}" alt="An image of {{ word.EnglishSpelling }}"             title="An image of {{ word.EnglishSpelling }}"  {% else %} src="{{ url_for('static', filename='images/noimage.png') }}" alt="A placeholder image" title="A placeholder image" {% endif %}
+        width="{{ 4*multiplier }}"
+        height="{{ 3*multiplier }}"
+        {% if lazy %}loading="lazy"{% endif %} />
+    {% endmacro %}
+    {% macro WordLink(word) %}
+        {# A link to the space for a specific word #}
+        <a href="{{ url_for('word_page', id=word.ID) }}">
+        {{ WordImage(word, small=True) }} <span>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}</span></a>
+    {% endmacro %}
+    {% macro WordList(words) %}
+        {# A list of words #}
+        {% if user != false and user.teacher %}
+            {# If the user is logged in and is a teacher, show a table with actions #}
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ WordLink(word) }}</td>
-                        <td>
-                            <a data-confirm href="{{ url_for('delete_word_action', id=word.ID) }}">Delete</a>
-                        </td>
+                        <th>Word</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        {# Otherwise, just do a regular list #}
-        <ul>
-            {% for word in words %}<li>{{ WordLink(word) }}</li>{% endfor %}
-        </ul>
-    {% endif %}
-{% endmacro %}
-{% macro TextField(name, label, prefix=None, textarea=False, required=True) %}
-    {# Versitile text field component for all your input neeeds!#}
-    <label for="{{ name }}">
-        {{ label }}
-        {% if textarea==false %}
-            <div class="input-wrapper">
-                {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
-            {% endif %}
-            {% if textarea %}
-                <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %}{{ arg+'="'+kwargs[arg]+'"' }}{% endfor %}  {% if textarea %}></textarea>
-            {% else %}
-                />
-            </div>
+                </thead>
+                <tbody>
+                    {% for word in words %}
+                        <tr>
+                            <td>{{ WordLink(word) }}</td>
+                            <td>
+                                <a data-confirm href="{{ url_for('delete_word_action', id=word.ID) }}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            {# Otherwise, just do a regular list #}
+            <ul>
+                {% for word in words %}<li>{{ WordLink(word) }}</li>{% endfor %}
+            </ul>
         {% endif %}
-    </label>
-{% endmacro %}
+    {% endmacro %}
+    {% macro TextField(name, label, prefix=None, textarea=False, required=True) %}
+        {# Versitile text field component for all your input neeeds!#}
+        <label for="{{ name }}">
+            {{ label }}
+            {% if textarea==false %}
+                <div class="input-wrapper">
+                    {% if prefix %}<span class="input-prefix">{{ prefix }}</span>{% endif %}
+                    {% endif %}
+                    {% if textarea %}
+                        <textarea {% else %} <input {% endif %} name="{{ name }}" id="{{ name }}" {% if required %}required{% endif %} {% for arg in kwargs %}{{ arg+'="'+kwargs[arg]+'"' }}{% endfor %}  {% if textarea %}></textarea>
+                    {% else %}
+                        />
+                    </div>
+                {% endif %}
+            </label>
+        {% endmacro %}
