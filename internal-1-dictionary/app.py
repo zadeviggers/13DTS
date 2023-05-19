@@ -325,18 +325,76 @@ def delete_word_action(id):
 @server.route("/create-word", methods=["POST"])
 @teacher_only
 def create_word_action():
-    # Get the word's parameters the form
-    EnglishSpelling = request.form["english-spelling"]
-    MaoriSpelling = request.form["maori-spelling"]
-    EnglishDefinition = request.form["english-definition"]
-    YearLevelFirstEncountered = request.form["year-level"]
-    ImageFilename = request.form["image-filename"]
-    # Handle empty strings
-    if len(ImageFilename) == 0:
-        ImageFilename = None
-    CategoryID = request.form["category-id"]
-
     try:
+        # Get the word's parameters the form
+
+        CategoryID = request.form["category-id"]
+
+        EnglishSpelling = request.form["english-spelling"]
+        if len(EnglishSpelling) == 0:
+            return (
+                redirect(
+                    url_for(
+                        "category_page",
+                        id=CategoryID,
+                        m="Make sure to add an English spelling",
+                    )
+                ),
+                400,
+            )
+        MaoriSpelling = request.form["maori-spelling"]
+        if len(MaoriSpelling) == 0:
+            return (
+                redirect(
+                    url_for(
+                        "category_page",
+                        id=CategoryID,
+                        m="Make sure to add an Maori spelling",
+                    )
+                ),
+                400,
+            )
+        EnglishDefinition = request.form["english-definition"]
+        if len(EnglishDefinition) == 0:
+            return (
+                redirect(
+                    url_for(
+                        "category_page",
+                        id=CategoryID,
+                        m="Make sure to add a definition in English",
+                    )
+                ),
+                400,
+            )
+        YearLevelFirstEncountered = request.form["year-level"]
+        if len(YearLevelFirstEncountered) == 0:
+            return (
+                redirect(
+                    url_for(
+                        "category_page",
+                        id=CategoryID,
+                        m="Make sure to add a year level",
+                    )
+                ),
+                400,
+            )
+
+        if not (0 <= int(YearLevelFirstEncountered) <= 13):
+            return (
+                redirect(
+                    url_for(
+                        "category_page",
+                        id=CategoryID,
+                        m="Enter a year level between 0 and 13",
+                    )
+                ),
+                400,
+            )
+        ImageFilename = request.form["image-filename"]
+        # Handle empty strings
+        if len(ImageFilename) == 0:
+            ImageFilename = None
+
         # Create the word
         g.cursor.execute(
             "INSERT INTO Words (MaoriSpelling, EnglishSpelling, EnglishDefinition, CategoryID, YearLevelFirstEncountered, ImageFilename, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?,?)",
@@ -389,6 +447,16 @@ def delete_category_action(id):
 def create_category_action():
     # Get the word's parameters the form
     EnglishName = request.form["english-name"]
+    if len(EnglishName) == 0:
+        return (
+            redirect(
+                url_for(
+                    "home_page",
+                    m="Make sure to add a name in English",
+                )
+            ),
+            400,
+        )
 
     try:
         # Create the category
