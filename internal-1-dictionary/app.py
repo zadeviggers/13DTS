@@ -261,7 +261,7 @@ def handle_sign_up():
 
     # Try to create and account log the user in.
     # Get the username and password form the form, and validate them
-    username = request.form["sign-up-username"]
+    username = request.form["sign-up-username"].strip()
     if not (3 <= len(username) <= 20):
         return redirect(
             url_for("home_page", m="Choose a username between 3 & 20 characters long")
@@ -345,7 +345,7 @@ def create_word_action():
 
         CategoryID = request.form["category-id"]
 
-        EnglishSpelling = request.form["english-spelling"]
+        EnglishSpelling = request.form["english-spelling"].strip()
         if len(EnglishSpelling) == 0:
             return redirect(
                 url_for(
@@ -354,7 +354,7 @@ def create_word_action():
                     m="Make sure to add an English spelling",
                 )
             )
-        MaoriSpelling = request.form["maori-spelling"]
+        MaoriSpelling = request.form["maori-spelling"].strip()
         if len(MaoriSpelling) == 0:
             return redirect(
                 url_for(
@@ -363,7 +363,7 @@ def create_word_action():
                     m="Make sure to add an Maori spelling",
                 )
             )
-        EnglishDefinition = request.form["english-definition"]
+        EnglishDefinition = request.form["english-definition"].strip()
         if len(EnglishDefinition) == 0:
             return redirect(
                 url_for(
@@ -450,7 +450,7 @@ def delete_category_action(id):
 @teacher_only
 def create_category_action():
     # Get the word's parameters the form
-    EnglishName = request.form["english-name"]
+    EnglishName = request.form["english-name"].strip()
     if len(EnglishName) == 0:
         return redirect(
             url_for(
