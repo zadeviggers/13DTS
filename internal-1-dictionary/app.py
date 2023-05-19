@@ -75,10 +75,12 @@ def teacher_only(func):
     # A custom decorator to make pages require the user to be logged in as a teacher
     @wraps(func)
     def wrapper(*args, **kwargs):
+        # Make sure they're logged in
         if not g.user:
-            return redirect(url_for("home_page", m="You are not logged in")), 401
+            return redirect(url_for("home_page", m="You are not logged in"))
+        # Make sure they're a teacher
         if g.user["teacher"] != True:
-            return redirect(url_for("home_page", m="You are not a teacher")), 401
+            return redirect(url_for("home_page", m="You are not a teacher"))
         return func(*args, **kwargs)
 
     return wrapper
@@ -219,7 +221,7 @@ def word_page(id):
 @server.route("/login", methods=["POST"])
 def handle_log_in():
     if g.user:
-        return redirect(url_for("home_page", m="Already logged in")), 409
+        return redirect(url_for("home_page", m="Already logged in"))
 
     # Try to log the user in, and return True if it works,
     # or and error message if it doesn't.
@@ -236,32 +238,26 @@ def handle_log_in():
 
         # Error if user not found
         if len(res) == 0:
-            return (
-                redirect(url_for("home_page", m="Username or password is wrong")),
-                401,
-            )
+            return redirect(url_for("home_page", m="Username or password is wrong"))
 
         user = res[0]
 
         # Check password
         matches = bcrypt.check_password_hash(user["PasswordHash"], password)
         if not matches:
-            return (
-                redirect(url_for("home_page", m="Username or password is wrong")),
-                401,
-            )
+            return redirect(url_for("home_page", m="Username or password is wrong"))
 
         # Log the user in
         session["id"] = user["ID"]
         return redirect(url_for("home_page"))
     except Exception as e:
-        return redirect(url_for("home_page", m=f"Error logging in {str(e)}")), 400
+        return redirect(url_for("home_page", m=f"Error logging in {str(e)}"))
 
 
 @server.route("/sign-up", methods=["POST"])
 def handle_sign_up():
     if g.user:
-        return redirect(url_for("home_page", m="Already logged in")), 409
+        return redirect(url_for("home_page", m="Already logged in"))
 
     # Try to create and account log the user in.
     # Get the username and password form the form
@@ -283,7 +279,7 @@ def handle_sign_up():
         res = g.cursor.fetchall()
 
         if len(res) > 0:
-            return redirect(url_for("home_page", m="Username already taken")), 409
+            return redirect(url_for("home_page", m="Username already taken"))
 
         # Create the user
         g.cursor.execute(
@@ -296,15 +292,15 @@ def handle_sign_up():
         id = get_last_inserted_row_id()
         session["id"] = id
 
-        return redirect(url_for("home_page", m="Successfully registered")), 201
+        return redirect(url_for("home_page", m="Successfully registered"))
     except Exception as e:
-        return redirect(url_for("home_page", m=f"Error creating account {str(e)}")), 400
+        return redirect(url_for("home_page", m=f"Error creating account {str(e)}"))
 
 
 @server.route("/logout", methods=["DELETE", "GET"])
 def handle_log_out():
     if g.user == False:
-        return redirect(url_for("home_page", m="Not logged in")), 401
+        return redirect(url_for("home_page", m="Not logged in"))
 
     # Log user out by popping id from session
     session.pop("id")
@@ -328,7 +324,7 @@ def delete_word_action(id):
         return redirect(url_for("category_page", id=category_id, m="Deleted word"))
 
     except Exception as e:
-        return redirect(url_for("home_page", m=f"Error deleting word {str(e)}")), 400
+        return redirect(url_for("home_page", m=f"Error deleting word {str(e)}"))
 
 
 @server.route("/create-word", methods=["POST"])
@@ -341,63 +337,48 @@ def create_word_action():
 
         EnglishSpelling = request.form["english-spelling"]
         if len(EnglishSpelling) == 0:
-            return (
-                redirect(
-                    url_for(
-                        "category_page",
-                        id=CategoryID,
-                        m="Make sure to add an English spelling",
-                    )
-                ),
-                400,
+            return redirect(
+                url_for(
+                    "category_page",
+                    id=CategoryID,
+                    m="Make sure to add an English spelling",
+                )
             )
         MaoriSpelling = request.form["maori-spelling"]
         if len(MaoriSpelling) == 0:
-            return (
-                redirect(
-                    url_for(
-                        "category_page",
-                        id=CategoryID,
-                        m="Make sure to add an Maori spelling",
-                    )
-                ),
-                400,
+            return redirect(
+                url_for(
+                    "category_page",
+                    id=CategoryID,
+                    m="Make sure to add an Maori spelling",
+                )
             )
         EnglishDefinition = request.form["english-definition"]
         if len(EnglishDefinition) == 0:
-            return (
-                redirect(
-                    url_for(
-                        "category_page",
-                        id=CategoryID,
-                        m="Make sure to add a definition in English",
-                    )
-                ),
-                400,
+            return redirect(
+                url_for(
+                    "category_page",
+                    id=CategoryID,
+                    m="Make sure to add a definition in English",
+                )
             )
         YearLevelFirstEncountered = request.form["year-level"]
         if len(YearLevelFirstEncountered) == 0:
-            return (
-                redirect(
-                    url_for(
-                        "category_page",
-                        id=CategoryID,
-                        m="Make sure to add a year level",
-                    )
-                ),
-                400,
+            return redirect(
+                url_for(
+                    "category_page",
+                    id=CategoryID,
+                    m="Make sure to add a year level",
+                )
             )
 
         if not (0 <= int(YearLevelFirstEncountered) <= 13):
-            return (
-                redirect(
-                    url_for(
-                        "category_page",
-                        id=CategoryID,
-                        m="Enter a year level between 0 and 13",
-                    )
-                ),
-                400,
+            return redirect(
+                url_for(
+                    "category_page",
+                    id=CategoryID,
+                    m="Enter a year level between 0 and 13",
+                )
             )
         ImageFilename = request.form["image-filename"]
         # Handle empty strings
@@ -422,10 +403,10 @@ def create_word_action():
 
         # Redirect to the page for the created word
         id = get_last_inserted_row_id()
-        return redirect(url_for("word_page", id=id)), 201
+        return redirect(url_for("word_page", id=id))
 
     except Exception as e:
-        return redirect(url_for("home_page", m=f"Error creating word {str(e)}")), 400
+        return redirect(url_for("home_page", m=f"Error creating word {str(e)}"))
 
 
 @server.route("/delete-category/<id>", methods=["DELETE", "GET"])
@@ -441,8 +422,7 @@ def delete_category_action(id):
                     "category_page",
                     id=id,
                     m="You need to delete all words in the category first",
-                ),
-                409,
+                )
             )
 
         # Delete the category
@@ -453,10 +433,7 @@ def delete_category_action(id):
         return redirect(url_for("home_page", m="Deleted category"))
 
     except Exception as e:
-        return (
-            redirect(url_for("home_page", m=f"Error deleting category {str(e)}")),
-            400,
-        )
+        return redirect(url_for("home_page", m=f"Error deleting category {str(e)}"))
 
 
 @server.route("/create-category", methods=["POST"])
@@ -465,14 +442,11 @@ def create_category_action():
     # Get the word's parameters the form
     EnglishName = request.form["english-name"]
     if len(EnglishName) == 0:
-        return (
-            redirect(
-                url_for(
-                    "home_page",
-                    m="Make sure to add a name in English",
-                )
-            ),
-            400,
+        return redirect(
+            url_for(
+                "home_page",
+                m="Make sure to add a name in English",
+            )
         )
 
     try:
@@ -485,10 +459,10 @@ def create_category_action():
 
         # Redirect to the newly created category page
         id = get_last_inserted_row_id()
-        return redirect(url_for("category_page", id=id)), 201
+        return redirect(url_for("category_page", id=id))
 
     except Exception as e:
-        return redirect(url_for("home_page", m=f"Error creating word {str(e)}")), 400
+        return redirect(url_for("home_page", m=f"Error creating word {str(e)}"))
 
 
 if __name__ == "__main__":
