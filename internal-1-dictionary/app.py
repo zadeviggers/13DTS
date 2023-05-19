@@ -146,7 +146,7 @@ def home_page():
     # The main homepage, which shows all the words
 
     # Get all the words
-    g.cursor.execute("SELECT * FROM Words")
+    g.cursor.execute("SELECT * FROM Words ORDER BY MaoriSpelling")
     words = g.cursor.fetchall()
 
     # Render the page
@@ -168,7 +168,10 @@ def category_page(id):
         abort(404)
 
     # Get the words in that category
-    g.cursor.execute("SELECT * FROM Words WHERE CategoryID = ?", [category["ID"]])
+    g.cursor.execute(
+        "SELECT * FROM Words WHERE CategoryID = ? ORDER BY MaoriSpelling",
+        [category["ID"]],
+    )
     category_words = g.cursor.fetchall()
 
     # Render the page
