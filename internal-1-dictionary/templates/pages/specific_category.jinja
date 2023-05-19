@@ -15,7 +15,7 @@
                     {{ components.TextField("english-spelling", "English spelling") }}
                     {{ components.TextField("maori-spelling", "Māori spelling") }}
                     {{ components.TextField("english-definition", "Defintion (English)", textarea=true) }}
-                    {{ components.TextField("year-level", "Year level first encounted", type="number") }}
+                    {{ components.TextField("year-level", "Year level first encounted (0-13)", type="number", min="0", max="13") }}
                     {{ components.TextField("image-filename", "Image Filename (inc. extention)", required=False) }}
                     <input name="category-id" type="hidden" value="{{ category.ID }}" />
                     <button type="submit">Create word</button>
