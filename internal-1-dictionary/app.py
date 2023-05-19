@@ -119,7 +119,7 @@ def before_request():
     g.user = get_user()
 
     # Also add the list of categories to the global object
-    categories_query = "SELECT ID, EnglishName from Categories"
+    categories_query = "SELECT ID, EnglishName from Categories ORDER BY EnglishName"
     g.cursor.execute(categories_query)
     categories = g.cursor.fetchall()
     g.categories = categories
