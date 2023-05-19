@@ -233,14 +233,20 @@ def handle_log_in():
 
         # Error if user not found
         if len(res) == 0:
-            return redirect(url_for("home_page", m="User not found")), 401
+            return (
+                redirect(url_for("home_page", m="Username or password is wrong")),
+                401,
+            )
 
         user = res[0]
 
         # Check password
         matches = bcrypt.check_password_hash(user["PasswordHash"], password)
         if not matches:
-            return redirect(url_for("home_page", m="Password is wrong")), 401
+            return (
+                redirect(url_for("home_page", m="Username or password is wrong")),
+                401,
+            )
 
         # Log the user in
         session["id"] = user["ID"]
