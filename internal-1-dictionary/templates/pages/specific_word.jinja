@@ -2,7 +2,7 @@
 {% set title = word.MaoriSpelling + " - " + word.EnglishSpelling %}
 {% block main %}
     <h1>{{ word.MaoriSpelling }} - {{ word.EnglishSpelling }}:</h1>
-    {{ components.WordImage(word) }}
+    {{ components.WordImage(word, lazy=False) }}
     <p>Defintion: {{ word.EnglishDefinition }}</p>
     <p>
         Category: <a href="{{ url_for('category_page', id=category.ID) }}">{{ category.EnglishName }}</a>

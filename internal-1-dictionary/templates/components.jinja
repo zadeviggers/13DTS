@@ -6,7 +6,7 @@ in any template that imports this file. #}
 {# When importing, make sure to add 'with context'
 to the end of the import line, to expose the
 global variables like 'user'. #}
-{% macro WordImage(word, small=False) %}
+{% macro WordImage(word, small=False, lazy=True) %}
     {% set multiplier = 80 %}
     {% if small %}
         {% set multiplier = 20 %}
@@ -17,14 +17,16 @@ global variables like 'user'. #}
              alt="An image of {{ word.EnglishSpelling }}"
              title="An image of {{ word.EnglishSpelling }}"
              width="{{ 4*multiplier }}"
-             height="{{ 3*multiplier }}" />
+             height="{{ 3*multiplier }}"
+             {% if lazy %}loading="lazy"{% endif %} />
     {% else %}
         <img class="word-image"
              src="{{ url_for('static', filename='images/noimage.png') }}"
              alt="A placeholder image"
              title="A placeholder image"
              width="{{ 4*multiplier }}"
-             height="{{ 3*multiplier }}" />
+             height="{{ 3*multiplier }}"
+             {% if lazy %}loading="lazy"{% endif %} />
     {% endif %}
 {% endmacro %}
 {% macro WordLink(word) %}
