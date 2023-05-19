@@ -260,9 +260,19 @@ def handle_sign_up():
         return redirect(url_for("home_page", m="Already logged in"))
 
     # Try to create and account log the user in.
-    # Get the username and password form the form
+    # Get the username and password form the form, and validate them
     username = request.form["sign-up-username"]
+    if not (3 <= len(username) <= 20):
+        return redirect(
+            url_for("home_page", m="Choose a username between 3 & 20 characters long")
+        )
+    if " " in username:
+        return redirect(url_for("home_page", m="Usernames can't have spaces in them"))
     password = request.form["sign-up-password"]
+    if len(password) < 8:
+        return redirect(
+            url_for("home_page", m="Passwords should be at least 8 characters long")
+        )
     # Checkboxes only send their value if they're checked
     is_teacher = "is-teacher" in request.form
 
