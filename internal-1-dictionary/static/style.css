@@ -17,7 +17,7 @@
 	--categories-width: 200px;
 	--auth-width: 300px;
 
-	/* Footer */
+	/* Footer & header */
 	--footer-x-padding: 10px;
 	--header-x-padding: 10px;
 
@@ -25,7 +25,8 @@
 	--categories-padding: 10px;
 
 	/* Main content */
-	--main-content-left-padding: 50px;
+	--main-content-left-padding: 50px; /* Desktop only */
+	--main-mobile-padding: 10px; /* Mobile only */
 
 	/* Auth panel */
 	--auth-padding: 10px;
@@ -59,11 +60,11 @@ body {
 
 	/* Page layout */
 	grid-template-columns: auto;
-	grid-template-rows: var(--navbar-height) 1fr auto auto var(--footer-height);
+	grid-template-rows: var(--navbar-height) auto 1fr auto var(--footer-height);
 	grid-template-areas:
 		"header"
-		"main"
 		"categories"
+		"main"
 		"auth"
 		"footer";
 }
@@ -71,11 +72,6 @@ body {
 #categories-container {
 	/* Page layout */
 	grid-area: categories;
-
-	/* Element style */
-	border-right: 1px solid black;
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
 }
 #categories {
 	padding: var(--categories-padding);
@@ -97,27 +93,6 @@ body {
 	gap: var(--auth-padding);
 }
 
-/* Page layout on desktop screens*/
-@media screen and (min-width: 800px) {
-	body {
-		/* Page layout */
-		grid-template-columns: var(--categories-width) auto var(--auth-width);
-		grid-template-rows: var(--navbar-height) auto var(--footer-height);
-		grid-template-areas:
-			"header header header"
-			"categories main auth"
-			"footer footer footer";
-	}
-	#categories {
-		position: sticky;
-		top: 0;
-	}
-	#auth {
-		position: sticky;
-		top: 0;
-	}
-}
-
 header {
 	/* Page layout */
 	grid-area: header;
@@ -134,9 +109,35 @@ header {
 main {
 	/* Page layout */
 	grid-area: main;
+	padding: var(--main-mobile-padding);
+}
 
-	/* Element layout */
-	padding-left: var(--main-content-left-padding);
+/* Page layout on desktop screens*/
+@media screen and (min-width: 800px) {
+	body {
+		/* Page layout */
+		grid-template-columns: var(--categories-width) auto var(--auth-width);
+		grid-template-rows: var(--navbar-height) auto var(--footer-height);
+		grid-template-areas:
+			"header header header"
+			"categories main auth"
+			"footer footer footer";
+	}
+	#categories {
+		position: sticky;
+		top: var(--categories-padding);
+		/* Sidebar style */
+		border-right: 1px solid black;
+		border-top: 1px solid black;
+		border-bottom: 1px solid black;
+	}
+	#auth {
+		position: sticky;
+		top: 0;
+	}
+	main {
+		padding-left: var(--main-content-left-padding);
+	}
 }
 
 footer {
