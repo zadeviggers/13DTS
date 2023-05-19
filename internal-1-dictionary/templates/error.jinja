@@ -1,0 +1,6 @@
+{% extends "base.jinja" %}
+{% set title = "Error " + error_code %}
+{% block main %}
+    <h1>A {{ error_code }} error occured</h1>
+    <p>{{ error }}</p>
+{% endblock main %}

@@ -13,6 +13,18 @@ bcrypt = Bcrypt(server)
 server.secret_key = "top-secrete"
 
 
+# Handling error 404 and displaying relevant web page
+@server.errorhandler(404)
+def not_found_error(error):
+    return render_template("error.jinja", error_code="404", error=error), 404
+
+
+# Handling error 500 and displaying relevant web page
+@server.errorhandler(500)
+def internal_error(error):
+    return render_template("error.jinja", error_code="500", error=error), 500
+
+
 def time_in_ms():
     # Used to get the current time as an integer of milliseconds
     return math.floor(time() * 1000)
