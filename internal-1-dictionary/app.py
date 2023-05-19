@@ -13,6 +13,14 @@ bcrypt = Bcrypt(server)
 server.secret_key = "top-secrete"
 
 
+# Note on variable capitalisation:
+# When I get values from the database columns,
+# I'm naming them the same as they're named
+# in the database, which is PascalCase,
+# but all other variables (and of course functions)
+# are in snake_case.
+
+
 def time_in_ms():
     # Used to get the current time as an integer of milliseconds
     return math.floor(time() * 1000)
@@ -200,21 +208,21 @@ def word_page(id):
     category = g.cursor.fetchone()
 
     # Get the creation date
-    created_at = datetime.fromtimestamp(word["CreatedAt"] / 1000)
+    CreatedAt = datetime.fromtimestamp(word["CreatedAt"] / 1000)
 
     # Get the user that created the word
     g.cursor.execute(
         "SELECT Username FROM Users WHERE ID = ?", (str(word["CreatedBy"]))
     )
-    created_by = g.cursor.fetchone()["Username"]
+    CreatedBy = g.cursor.fetchone()["Username"]
 
     # Render the pages
     return render_template(
         "pages/specific_word.jinja",
         category=category,
         word=word,
-        created_at=created_at,
-        created_by=created_by,
+        created_at=CreatedAt,
+        created_by=CreatedBy,
     )
 
 
